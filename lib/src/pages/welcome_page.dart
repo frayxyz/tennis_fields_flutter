@@ -10,18 +10,23 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff011537),
       body: Stack(
         children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-          ),
+          buildBackgroundImage(context),
           buildTitleWelcome(context),
           Positioned(bottom: 40, child: buildWelcomeButtons(context))
         ],
       ),
     );
+  }
+
+  Image buildBackgroundImage(BuildContext context) {
+    return Image.asset(
+          'assets/images/tennis_image.jpg',
+          height: MediaQuery.of(context).size.height,
+          fit: BoxFit.cover,
+          alignment: Alignment.bottomCenter,
+        );
   }
 
   Positioned buildTitleWelcome(BuildContext context) {
@@ -98,7 +103,7 @@ class WelcomePage extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => const RegisterPage()),
             ),
-            color: Colors.grey.withOpacity(0.5),
+            color: Colors.grey.withOpacity(0.4),
           ),
         ],
       ),
