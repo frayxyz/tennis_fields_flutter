@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../custom_button.dart';
+
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -117,8 +120,9 @@ class _RegisterFormState extends State<RegisterForm> {
               "Registrarme",
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
-                  // register logic
-                  debugPrint('Nombre: $_name, Email: $_email, Teléfono: $_phone, Contraseña: $_password');
+                  debugPrint('valid form Nombre: $_name, Email: $_email, Teléfono: $_phone, Contraseña: $_password');
+
+                  context.read<AuthenticationBloc>().add(SignUpEvent(email: _email, password: _password, name: _name, phone: _phone));
                 }
               },
             ),

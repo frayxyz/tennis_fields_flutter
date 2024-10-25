@@ -5,11 +5,13 @@ class CustomButton extends StatelessWidget {
   final void Function() onPressed;
   final String text;
   final Color? color;
+  final bool isCardButton;
 
   const CustomButton(this.text,{
     super.key,
     required this.onPressed,
     this.color,
+    this.isCardButton= false
   });
 
 
@@ -18,13 +20,13 @@ class CustomButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: EdgeInsets.symmetric(vertical: isCardButton?6 : 14),
         backgroundColor: color?? Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        minimumSize: Size(MediaQuery.of(context).size.width * 0.8, 50),
+        minimumSize: Size(MediaQuery.of(context).size.width * 0.8, 20),
       ),
-      child: Text(text, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+      child: Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize: isCardButton? 14 : 18)),
     );
   }
 }

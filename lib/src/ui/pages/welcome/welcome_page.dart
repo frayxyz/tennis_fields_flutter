@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:tennis_booking/src/pages/login_page.dart';
-import 'package:tennis_booking/src/pages/register_page.dart';
 
-import 'widgets/custom_button.dart';
+import '../login/login_page.dart';
+import '../register/register_page.dart';
+import '../widgets/custom_button.dart';
+import '../widgets/texts/title_app_texts.dart';
 
-class WelcomePage extends StatelessWidget {
+class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
 
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,49 +40,18 @@ class WelcomePage extends StatelessWidget {
         top: MediaQuery.of(context).size.height * 0.14,
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          child: Column(
+          child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Stack(
                 children: [
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(bottom: 65, right: 10),
-                    child: Text(
-                      'Tennis',
-                      style: TextStyle(
-                          fontSize: 65,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
+                    child: TennisText(),
                   ),
                   Positioned(
                       top: 70,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              Theme.of(context).primaryColor.withOpacity(0.01),
-                              // Completamente transparente al inicio
-                              Theme.of(context)
-                                  .primaryColor, // Color primario al final
-                            ],
-                          ),
-                        ),
-                        margin: const EdgeInsets.only(left: 5),
-                        padding: const EdgeInsets.only(right: 30, left: 10),
-                        child: const Text(
-                          'court',
-                          style: TextStyle(
-                              fontSize: 65,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              height: 0),
-                          textAlign: TextAlign.center,
-                        ),
-                      ))
+                      child: CourtText())
                 ],
               ),
             ],
@@ -94,7 +69,7 @@ class WelcomePage extends StatelessWidget {
           CustomButton("Iniciar sesión",
               onPressed: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                   )),
           const SizedBox(height: 15), // Espacio entre botones
           CustomButton(
