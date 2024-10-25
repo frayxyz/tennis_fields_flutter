@@ -8,3 +8,13 @@ class ReservationInitial extends ReservationState {
   @override
   List<Object> get props => [];
 }
+
+class ReservationLoaded extends ReservationState {
+  final List<Reservation> scheduledReservations;
+
+  const ReservationLoaded({required this.scheduledReservations});
+
+  @override
+  List<Object?> get props => [scheduledReservations];
+
+}
