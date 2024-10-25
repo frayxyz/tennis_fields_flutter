@@ -1,8 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../domain/entities/field.dart';
+import '../../reservation/reservation_page.dart';
 import '../buttons/custom_button.dart';
+import '../change_of_rain.dart';
 
 class FieldCard extends StatelessWidget {
   final Field field;
@@ -26,7 +27,7 @@ class FieldCard extends StatelessWidget {
         children: [
           buildCardImage(),
           buildCardInfo(context),
-          reservationButton(),
+          reservationButton(context),
         ],
       ),
     );
@@ -66,18 +67,13 @@ class FieldCard extends StatelessWidget {
               ),
               const Positioned(
                   right: 12,
-                  child: Row(
-                    children: [
-                      Icon(CupertinoIcons.cloud_drizzle, color: Colors.blueAccent,),
-                      Text(" 30 %")
-                    ],
-                  ))
+                  child: ChanceOfRainWidget())
               //const Stack()
             ],
           ),
-          SizedBox(height: 3),
+          const SizedBox(height: 3),
           Text('Cancha tipo ${field.type}'),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           const Wrap(children: [
             Icon(
               Icons.calendar_today_outlined,
@@ -86,22 +82,24 @@ class FieldCard extends StatelessWidget {
             SizedBox(width: 7),
             Text("9 de Julio 2024")
           ]),
-          SizedBox(height: 7),
+          const SizedBox(height: 7),
           const Text("Disponible")
         ],
       ),
     );
   }
 
-  Padding reservationButton() {
+  Padding reservationButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 40, right: 40, top: 20),
       child: CustomButton(
         'Reservar',
         isCardButton: true,
-        onPressed: () {
-          // Acción de reservar
-        },
+        onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) =>
+                const ReservationPage()),
+          ),
       ),
     );
   }
