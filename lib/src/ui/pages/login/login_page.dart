@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../home/home_page.dart';
 import '../register/register_page.dart';
-import '../widgets/appbar_image.dart';
-import '../widgets/custom_button.dart';
-import '../widgets/custom_text_link.dart';
-import '../widgets/title_with_divider.dart';
+import '../widgets/image/appbar_image.dart';
+import '../widgets/buttons/custom_button.dart';
+import '../widgets/buttons/custom_text_link.dart';
+import '../widgets/texts/title_with_divider.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();

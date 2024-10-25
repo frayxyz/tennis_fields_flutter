@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../blocs/authentication_bloc/authentication_bloc.dart';
 import '../home/home_page.dart';
 import '../login/login_page.dart';
-import '../widgets/appbar_image.dart';
-import '../widgets/custom_text_link.dart';
+import '../widgets/image/appbar_image.dart';
+import '../widgets/buttons/custom_text_link.dart';
 import '../widgets/forms/register_form.dart';
-import '../widgets/title_with_divider.dart';
+import '../widgets/texts/title_with_divider.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});

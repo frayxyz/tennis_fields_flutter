@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../login/login_page.dart';
 import '../register/register_page.dart';
-import '../widgets/custom_button.dart';
+import '../widgets/buttons/custom_button.dart';
 import '../widgets/texts/title_app_texts.dart';
 
 class WelcomePage extends StatefulWidget {

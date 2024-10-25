@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/authentication_bloc/authentication_bloc.dart';
-import '../custom_button.dart';
+import '../buttons/custom_button.dart';
 
 
 class RegisterForm extends StatefulWidget {
