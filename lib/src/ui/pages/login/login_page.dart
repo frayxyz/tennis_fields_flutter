@@ -58,11 +58,11 @@ class LoginPage extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 50),
-      padding: const EdgeInsets.only(left: 30),
+      padding: const EdgeInsets.symmetric(horizontal: 30),
       width: MediaQuery.of(context).size.width,
       child: Wrap(
         children: [
-          TitleWithDivider(title: "Iniciar sesión"),
+          const TitleWithDivider(title: "Iniciar sesión"),
           TextField(
             controller: _emailController,
             decoration: InputDecoration(
@@ -82,9 +82,12 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  CustomButton buildLoginButton(BuildContext context) {
-    return CustomButton("Iniciar sesión", onPressed: () {
-      context.read<AuthenticationBloc>().add(LoginEvent(email: _emailController.text, password: _passwordController.text));
-    });
+  Widget buildLoginButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: CustomButton("Iniciar sesión", onPressed: () {
+        context.read<AuthenticationBloc>().add(LoginEvent(email: _emailController.text, password: _passwordController.text));
+      }),
+    );
   }
 }

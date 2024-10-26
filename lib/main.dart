@@ -38,9 +38,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primaryColor: const Color(0xff82bc00),
           scaffoldBackgroundColor: Colors.white,
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff82bc00)),
+          colorScheme: ColorScheme.light(
+            primary: Colors.blue.shade800,
+          ),
           useMaterial3: true,
-
         ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {

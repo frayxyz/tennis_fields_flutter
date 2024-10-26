@@ -23,8 +23,8 @@ class CustomButton extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: isCardButton?6 : 14),
         backgroundColor: color?? Theme.of(context).primaryColor,
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        minimumSize: Size(MediaQuery.of(context).size.width * 0.8, 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        minimumSize: Size(MediaQuery.of(context).size.width, 20),
       ),
       child: Text(text, style: TextStyle(fontWeight: FontWeight.bold, fontSize: isCardButton? 14 : 18)),
     );
