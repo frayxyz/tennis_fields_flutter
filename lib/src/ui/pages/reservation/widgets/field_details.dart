@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../blocs/create_reservation/create_reservation_bloc.dart';
+import '../../../../domain/entities/field.dart';
 import '../../widgets/change_of_rain.dart';
-import 'instructor_select/instructor_select.dart';
 
 class FieldDetailsInfo extends StatelessWidget {
+  final Field field;
+
   const FieldDetailsInfo({
-    super.key,
+    super.key, required this.field,
   });
 
   @override
@@ -15,20 +15,18 @@ class FieldDetailsInfo extends StatelessWidget {
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 25.0),
-      child: BlocBuilder<CreateReservationBloc, CreateReservationState>(
-        builder: (context, state) {
-          return Wrap(
+      child: Wrap(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    state.field!.name,
+                    field.name,
                     style: const TextStyle(
                         fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "\$${state.field!.pricePerHour}",
+                    "\$${field.pricePerHour}",
                     style: TextStyle(
                         fontSize: 24,
                         color: Theme.of(context).colorScheme.primary,
@@ -40,7 +38,7 @@ class FieldDetailsInfo extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Cancha tipo ${state.field!.type}"),
+                  Text("Cancha tipo ${field.type}"),
                   const Text("Por hora"),
                 ],
               ),
@@ -60,7 +58,7 @@ class FieldDetailsInfo extends StatelessWidget {
                       ),
                       const Icon(Icons.access_time, size: 18),
                       Text(
-                          " ${state.field!.openingTime} a ${state.field!.closingTime}"),
+                          " ${field.openingTime} a ${field.closingTime}"),
                     ],
                   ),
                   const ChanceOfRainWidget()
@@ -71,15 +69,11 @@ class FieldDetailsInfo extends StatelessWidget {
                 children: [
                   const Icon(Icons.location_on_outlined, size: 18),
                   const SizedBox(width: 3),
-                  Text(state.field!.location),
+                  Text(field.location),
                 ],
               ),
-              const InstructorSelect(),
-
             ],
-          );
-        },
-      ),
+          )
     );
   }
 }

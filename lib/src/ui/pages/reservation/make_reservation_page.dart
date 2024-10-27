@@ -8,19 +8,21 @@ import 'package:tennis_booking/src/utils/date_helper.dart';
 
 import '../../../blocs/create_reservation/create_reservation_bloc.dart';
 import '../../../blocs/instructor/instructor_bloc.dart';
+import 'detail/reservation_page.dart';
 import 'widgets/date_selectors/date_dropdown.dart';
 import 'widgets/date_selectors/hour_dropdown.dart';
 import 'widgets/field_details.dart';
+import 'widgets/instructor_select/instructor_select.dart';
 import 'widgets/modal/confirm_reservation_modal.dart';
 
-class ReservationPage extends StatefulWidget {
-  const ReservationPage({super.key});
+class MakeReservationPage extends StatefulWidget {
+  const MakeReservationPage({super.key});
 
   @override
-  State<ReservationPage> createState() => _ReservationPageState();
+  State<MakeReservationPage> createState() => _MakeReservationPageState();
 }
 
-class _ReservationPageState extends State<ReservationPage> {
+class _MakeReservationPageState extends State<MakeReservationPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -38,7 +40,14 @@ class _ReservationPageState extends State<ReservationPage> {
           children: [
             buildCarouselImageAndButtons(context),
             const SizedBox(height: 18),
-            const FieldDetailsInfo(),
+            BlocBuilder<CreateReservationBloc, CreateReservationState>(
+              builder: (context, state) {
+                return FieldDetailsInfo(
+                  field: state.field!,
+                );
+              },
+            ),
+            const InstructorSelect(),
             Container(
               width: double.infinity,
               color: const Color(0xfff4f7fc),
@@ -231,12 +240,14 @@ class _ReservationPageState extends State<ReservationPage> {
     );
   }
 
-  void showConfirmReservationModal(BuildContext context, CreateReservationState state) {
+  void showConfirmReservationModal(
+      BuildContext context, CreateReservationState state) {
     String? instructorName;
-    if(state.instructorSelected != null){
+    if (state.instructorSelected != null) {
       final instructorState = context.read<InstructorBloc>().state;
-      if(instructorState is InstructorsLoaded){
-        instructorName = instructorState.getInstructorById(state.instructorSelected!)?.name;
+      if (instructorState is InstructorsLoaded) {
+        instructorName =
+            instructorState.getInstructorById(state.instructorSelected!)?.name;
       }
     }
 
@@ -244,26 +255,39 @@ class _ReservationPageState extends State<ReservationPage> {
       context: context,
       builder: (BuildContext context) {
         return ConfirmReservationModal(
-          instructorName: instructorName??"Sin instructor",
-          reservationDate: DateHelper.formatDateToString(state.reservationDate!),
+          instructorName: instructorName ?? "Sin instructor",
+          reservationDate:
+              DateHelper.formatDateToString(state.reservationDate!),
           reservationTime: "${state.startTime} a ${state.endTime} hrs",
           price: state.calculateTotalPrice(state.field!.pricePerHour),
           onConfirm: () {
             // Lógica de confirmación, validaciones etc
-            Reservation newReservation= Reservation(userId: 1,
+            Reservation newReservation = Reservation(
+              userId: 1,
               fieldId: state.field!.id!,
-              reservationDate: DateHelper.formatDateToString(state.reservationDate!),
+              reservationDate:
+                  DateHelper.formatDateToString(state.reservationDate!),
               startTime: state.startTime!,
               endTime: state.endTime!,
               status: 'created',
             );
-            context.read<ReservationBloc>().add(AddReservationEvent(newReservation));
+            context
+                .read<ReservationBloc>()
+                .add(AddReservationEvent(newReservation));
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Reserva creada!"), backgroundColor: Theme.of(context).primaryColor),
+              SnackBar(
+                  content: Text("Reserva creada!"),
+                  backgroundColor: Theme.of(context).primaryColor),
             );
-            Navigator.of(context).pop();//va a atras
+            Navigator.of(context).pop(); //va atras
             Navigator.of(context).pop();
             //se dirige a detalle reserva
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ReservationPage(
+                field: state.field!,
+                reservation: newReservation)),//todo: Revisar
+            );
           },
           onCancel: () {
             Navigator.of(context).pop();
