@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:tennis_booking/src/domain/entities/user.dart';
+import 'package:tennis_booking/src/domain/entities/user_info.dart';
 
 import '../../domain/gateways/user_repository.dart';
 import '../services/db_helper.dart';

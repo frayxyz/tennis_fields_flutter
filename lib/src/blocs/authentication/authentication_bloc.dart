@@ -3,9 +3,9 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../domain/entities/user.dart';
-import '../../../domain/entities/user_info.dart';
-import '../../../domain/gateways/user_repository.dart';
+import '../../domain/entities/user.dart';
+import '../../domain/entities/user_info.dart';
+import '../../domain/gateways/user_repository.dart';
 
 part 'authentication_event.dart';
 part 'authentication_state.dart';
@@ -43,29 +43,3 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     });
   }
 }
-
-/*
-usando usecase
-//login
- final UserInfo? result = await loginUseCase
-            .execute(LoginParams(event.email, event.password));
-        if (result != null) {
-          emit(AuthenticationState(AuthStatus.authenticated, userInfo: result));
-        } else {
-          emit(const AuthenticationState(AuthStatus.unauthenticated,
-              error: 'Login failed'));
-        }
-
-//sign up
- debugPrint("signup event  ..");
-        final newUser = User(
-          email: event.email,
-          password: event.password,
-          name: event.name,
-          phone: event.phone,
-        );
-        final UserInfo? user = await registerUserUseCase.execute(newUser);
-        if(user != null){
-          emit(AuthenticationState(AuthStatus.registerSuccess, userInfo: user)); // You can manage states accordingly
-        }
- */

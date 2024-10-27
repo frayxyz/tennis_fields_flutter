@@ -4,13 +4,15 @@ class HourDropdown extends StatefulWidget {
   final String title;
   final List<String> availableHours;
   final ValueChanged<String?> onHourSelected;
+  final String? defaultTime;
 
   const HourDropdown({
-    Key? key,
+    super.key,
     required this.title,
     required this.availableHours,
     required this.onHourSelected,
-  }) : super(key: key);
+    this.defaultTime,
+  });
 
   @override
   _HourDropdownState createState() => _HourDropdownState();
@@ -21,6 +23,12 @@ class _HourDropdownState extends State<HourDropdown> {
   bool _isDropdownOpen = false;
   final LayerLink _layerLink = LayerLink();
   late OverlayEntry _overlayEntry;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedHour = widget.defaultTime;
+  }
 
   void _toggleDropdown() {
     if (_isDropdownOpen) {

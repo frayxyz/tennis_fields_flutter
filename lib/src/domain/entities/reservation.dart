@@ -6,6 +6,8 @@ class Reservation {
   final String startTime;
   final String endTime;
   final String status;
+  final String? instructorId;
+  final String? comment;
 
   Reservation({
     this.id,
@@ -15,6 +17,8 @@ class Reservation {
     required this.startTime,
     required this.endTime,
     required this.status,
+    this.instructorId,
+    this.comment
   });
 
   factory Reservation.fromMap(Map<String, dynamic> map) {
@@ -26,6 +30,8 @@ class Reservation {
       startTime: map['start_time'],
       endTime: map['end_time'],
       status: map['status'],
+      instructorId: map['instructor_id'],
+      comment: map['comment']
     );
   }
 
@@ -38,6 +44,8 @@ class Reservation {
       'start_time': startTime,
       'end_time': endTime,
       'status': status,
+      'instructor_id': instructorId,
+      'comment': comment
     };
   }
 }

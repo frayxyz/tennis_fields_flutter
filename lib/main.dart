@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tennis_booking/src/data/repositories/fields_repository_impl.dart';
+import 'package:tennis_booking/src/data/repositories/instructor_repository_impl.dart';
 import 'package:tennis_booking/src/data/repositories/reservation_repository_impl.dart';
 import 'package:tennis_booking/src/data/repositories/user_repository_impl.dart';
 
-import 'package:tennis_booking/src/ui/blocs/authentication_bloc/authentication_bloc.dart';
-import 'package:tennis_booking/src/ui/blocs/fields_bloc/fields_bloc.dart';
-import 'package:tennis_booking/src/ui/pages/welcome/welcome_page.dart';
+import 'src/blocs/authentication/authentication_bloc.dart';
+import 'src/blocs/fields/fields_bloc.dart';
+import 'src/blocs/instructor/instructor_bloc.dart';
+import 'src/ui/pages/welcome/welcome_page.dart';
 
-import 'src/ui/blocs/reservation_bloc/reservation_bloc.dart';
+import 'src/blocs/create_reservation/create_reservation_bloc.dart';
+import 'src/blocs/reservation/reservation_bloc.dart';
 import 'src/ui/pages/home/home_page.dart';
 
 void main() {
@@ -31,6 +34,12 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => ReservationBloc(ReservationRepositoryImpl()),
+        ),
+        BlocProvider(
+          create: (context) => CreateReservationBloc(),
+        ),
+        BlocProvider(
+          create: (context) => InstructorBloc(InstructorRepositoryImpl()),
         ),
       ],
       child: MaterialApp(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../blocs/authentication_bloc/authentication_bloc.dart';
+import '../../../../blocs/authentication/authentication_bloc.dart';
 import '../buttons/custom_button.dart';
 
 

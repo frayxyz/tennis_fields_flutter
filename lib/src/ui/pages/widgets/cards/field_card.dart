@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../blocs/create_reservation/create_reservation_bloc.dart';
 import '../../../../domain/entities/field.dart';
 import '../../reservation/reservation_page.dart';
 import '../buttons/custom_button.dart';
@@ -95,11 +97,15 @@ class FieldCard extends StatelessWidget {
       child: CustomButton(
         'Reservar',
         isCardButton: true,
-        onPressed: () => Navigator.push(
+        onPressed: () {
+          //Agregar evento para empezar CrearReservation
+          context.read<CreateReservationBloc>().add(CreateReservationInitialEvent(fieldReservation: field));
+          Navigator.push(
             context,
             MaterialPageRoute(builder: (context) =>
                 const ReservationPage()),
-          ),
+          );
+        },
       ),
     );
   }

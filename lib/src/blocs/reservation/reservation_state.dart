@@ -18,3 +18,11 @@ class ReservationLoaded extends ReservationState {
   List<Object?> get props => [scheduledReservations];
 
 }
+
+class ReservationError extends ReservationState {
+  final String message;
+
+  const ReservationError(this.message);
+  @override
+  List<Object> get props => [message];
+}

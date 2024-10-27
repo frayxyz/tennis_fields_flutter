@@ -1,6 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../../blocs/create_reservation/create_reservation_bloc.dart';
+import '../../../../../utils/date_helper.dart';
 
 class DateDropdown extends StatefulWidget {
   final String title;
@@ -19,6 +21,12 @@ class DateDropdown extends StatefulWidget {
 class _DateDropdownState extends State<DateDropdown> {
   DateTime? _selectedDate;
   bool _isDropdownOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = context.read<CreateReservationBloc>().state.reservationDate;
+  }
 
   void _toggleDropdown() {
     setState(() {
@@ -49,8 +57,8 @@ class _DateDropdownState extends State<DateDropdown> {
                     const SizedBox(height: 4),
                     Text(
                       _selectedDate != null
-                          ? DateFormat("dd/MM/yyyy").format(_selectedDate!)
-                          : "dd/mm/yyyy",
+                          ? DateHelper.formatDateToString(_selectedDate!)
+                          : DateHelper.formatDateToString(DateTime.now()),//todo: fecha mostrada en tarjeta home
                       style: TextStyle(
                           color: _selectedDate != null? Theme.of(context).colorScheme.primary : Colors.grey
                       ),

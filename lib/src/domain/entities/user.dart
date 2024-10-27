@@ -15,7 +15,6 @@ class User {
     this.signupDate,
   });
 
-  // Método para convertir un Map a un User
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
       id: map['id'],
@@ -27,7 +26,6 @@ class User {
     );
   }
 
-  // Método para convertir un User a un Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,

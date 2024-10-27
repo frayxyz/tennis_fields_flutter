@@ -4,6 +4,7 @@ class Field {
   final String location;
   final String openingTime;
   final String closingTime;
+  final int pricePerHour;
   final String type;
 
   Field({
@@ -12,6 +13,7 @@ class Field {
     required this.location,
     required this.openingTime,
     required this.closingTime,
+    required this.pricePerHour,
     required this.type,
   });
 
@@ -23,6 +25,7 @@ class Field {
       location: map['location'],
       openingTime: map['opening_time'],
       closingTime: map['closing_time'],
+      pricePerHour: map['price_per_hour'],
       type: map['type'],
     );
   }
@@ -35,6 +38,7 @@ class Field {
       'location': location,
       'opening_time': openingTime,
       'closing_time': closingTime,
+      'price_per_hour': pricePerHour,
       'type': type,
     };
   }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../blocs/fields_bloc/fields_bloc.dart';
+import '../../../blocs/fields/fields_bloc.dart';
+import '../../../blocs/instructor/instructor_bloc.dart';
 import '../widgets/cards/field_card.dart';
 import '../widgets/navbar/custom_bottom_navbar.dart';
 import '../widgets/texts/title_app_texts.dart';
@@ -18,6 +19,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     context.read<FieldsBloc>().add(LoadFieldsEvent());
+    context.read<InstructorBloc>().add(FetchInstructors());
   }
 
   @override

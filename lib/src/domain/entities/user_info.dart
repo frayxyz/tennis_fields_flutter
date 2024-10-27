@@ -14,4 +14,12 @@ class UserInfo {
       name: user.name
     );
   }
+
+  factory UserInfo.fromJson(Map<String, dynamic> map) {
+    return UserInfo(
+      id: map['id'],
+      name: map['name'],
+      email: map['email']??"",
+    );
+  }
 }
