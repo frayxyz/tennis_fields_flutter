@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../domain/entities/field.dart';
-import '../../widgets/change_of_rain.dart';
+import '../../widgets/chance_of_rain.dart';
 
 class FieldDetailsInfo extends StatelessWidget {
   final Field field;

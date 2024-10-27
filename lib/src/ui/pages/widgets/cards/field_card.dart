@@ -5,7 +5,7 @@ import '../../../../blocs/create_reservation/create_reservation_bloc.dart';
 import '../../../../domain/entities/field.dart';
 import '../../reservation/make_reservation_page.dart';
 import '../buttons/custom_button.dart';
-import '../change_of_rain.dart';
+import '../chance_of_rain.dart';
 
 class FieldCard extends StatelessWidget {
   final Field field;
@@ -41,8 +41,7 @@ class FieldCard extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         image: const DecorationImage(
-          image:
-              AssetImage('assets/images/tennis_image.jpg'), // Imagen de ejemplo
+          image: AssetImage('assets/images/tennis_image.jpg'), // Imagen de ejemplo
           fit: BoxFit.cover,
         ),
       ),

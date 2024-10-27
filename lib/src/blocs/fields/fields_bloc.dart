@@ -21,4 +21,11 @@ class FieldsBloc extends Bloc<FieldsEvent, FieldsState> {
       }
     });
   }
+
+  Field? getFieldById(int fieldId){
+    if(state is FieldsLoaded){
+      return (state as FieldsLoaded).fields.where((f)=>f.id == fieldId).firstOrNull;
+    }
+    return null;
+  }
 }

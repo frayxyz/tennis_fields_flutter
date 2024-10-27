@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tennis_booking/src/blocs/authentication/authentication_bloc.dart';
 
 import '../../../blocs/fields/fields_bloc.dart';
 import '../../../blocs/instructor/instructor_bloc.dart';
+import '../../../blocs/reservation/reservation_bloc.dart';
 import '../widgets/cards/field_card.dart';
+import '../widgets/cards/reservation_card.dart';
 import '../widgets/navbar/custom_bottom_navbar.dart';
 import '../widgets/texts/title_app_texts.dart';
 
@@ -15,11 +18,24 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late final FieldsBloc fieldsBloc;
   @override
   void initState() {
     super.initState();
-    context.read<FieldsBloc>().add(LoadFieldsEvent());
+    fieldsBloc = context.read<FieldsBloc>();
+    fieldsBloc.add(LoadFieldsEvent());
     context.read<InstructorBloc>().add(FetchInstructors());
+  }
+
+  @override
+  void didChangeDependencies() {
+    final authBloc = context.read<AuthenticationBloc>();
+    if (authBloc.state.status == AuthStatus.authenticated &&
+        authBloc.state.userInfo != null) {
+      debugPrint("loading reservaion didChange");
+      context.read<ReservationBloc>().add(LoadReservationsEvent(authBloc.state.userInfo!.id!));
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -90,52 +106,38 @@ class _HomePageState extends State<HomePage> {
           'Reservas Programadas',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 40),
         listScheduledReservations(),
       ]),
     );
   }
 
-  ListView listScheduledReservations() {
-    return ListView(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: const [
-        ListTile(
-          leading: CircleAvatar(
-            backgroundImage:
-                AssetImage('assets/place.jpg'), // Imagen de ejemplo
-          ),
-          title: Text('Reserva 1'),
-          subtitle: Text('Lugar: Salón de Belleza A'),
-          trailing: Text('10:00 AM'),
-        ),
-        ListTile(
-          leading: CircleAvatar(
-            backgroundImage: AssetImage('assets/place.jpg'),
-          ),
-          title: Text('Reserva 2'),
-          subtitle: Text('Lugar: Barbería B'),
-          trailing: Text('11:00 AM'),
-        ),
-        ListTile(
-          leading: CircleAvatar(
-            backgroundImage: AssetImage('assets/place.jpg'),
-          ),
-          title: Text('Reserva 2'),
-          subtitle: Text('Lugar: Barbería B'),
-          trailing: Text('11:00 AM'),
-        ),
-        ListTile(
-          leading: CircleAvatar(
-            backgroundImage: AssetImage('assets/place.jpg'),
-          ),
-          title: Text('Reserva 2'),
-          subtitle: Text('Lugar: Barbería B'),
-          trailing: Text('11:00 AM'),
-        ),
+  Wrap buildTitleAppBar() {
+    return const Wrap(
+      children: [
+        TennisText(isTitleAppbar: true),
+        CourtText(
+          isTitleAppbar: true,
+        )
       ],
     );
+  }
+
+  List<Widget> buildAppbarActions() {
+    return [
+      const CircleAvatar(
+        radius: 12,
+        backgroundImage: AssetImage('assets/images/tennis_image.jpg'),
+      ),
+      IconButton(
+        icon: const Icon(Icons.notifications_none),
+        onPressed: () {},
+      ),
+      IconButton(
+        icon: const Icon(Icons.menu),
+        onPressed: () {},
+      ),
+    ];
   }
 
   Container listFieldsAvailability() {
@@ -160,32 +162,49 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  List<Widget> buildAppbarActions() {
-    return [
-      const CircleAvatar(
-        radius: 12,
-        backgroundImage:
-            AssetImage('assets/images/tennis_image.jpg'), // Imagen de ejemplo
-      ),
-      IconButton(
-        icon: const Icon(Icons.notifications_none),
-        onPressed: () {},
-      ),
-      IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {},
-      ),
-    ];
-  }
-
-  Wrap buildTitleAppBar() {
-    return const Wrap(
-      children: [
-        TennisText(isTitleAppbar: true),
-        CourtText(
-          isTitleAppbar: true,
-        )
-      ],
+  Widget listScheduledReservations() {
+    return BlocBuilder<ReservationBloc, ReservationState>(
+      builder: (context, state) {
+        debugPrint("state resrvation is $state");
+        if (state is ReservationLoaded) {
+          if (state.scheduledReservations.isNotEmpty) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.scheduledReservations.length,
+                itemBuilder: (context, index) {
+                  final reservation = state.scheduledReservations[index];
+                  return fieldsBloc.getFieldById(reservation.fieldId) != null
+                      ? Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: ReservationCard(
+                        reservation: reservation,
+                        field: fieldsBloc.getFieldById(reservation.fieldId)!),
+                      )
+                      : const SizedBox();
+                },
+              ),
+            );
+          } else {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(30.0),
+                child: Text("No tienes reservas programadas."),
+              ),);
+          }
+        } else if (state is ReservationInitial || state is ReservationLoading) {
+          return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(30.0),
+                child: CircularProgressIndicator(),
+              ));
+        } else {
+          return const Center(
+              child: Text("No se pudieron cargar las reservas."));
+        }
+      },
     );
   }
 }

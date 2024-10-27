@@ -1,7 +1,11 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tennis_booking/src/domain/entities/field.dart';
 import 'package:tennis_booking/src/domain/entities/reservation.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/back_icon_button.dart';
+import 'package:tennis_booking/src/ui/pages/widgets/buttons/custom_border_button.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/custom_button.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/icon_text_row.dart';
 import 'package:tennis_booking/src/utils/date_helper.dart';
@@ -31,7 +35,8 @@ class _ReservationPageState extends State<ReservationPage> {
 
   @override
   Widget build(BuildContext context) {
-    int reservationHours = DateHelper.getDifferenceBetweenHours(widget.reservation.startTime, widget.reservation.endTime);
+    int reservationHours = DateHelper.getDifferenceBetweenHours(
+        widget.reservation.startTime, widget.reservation.endTime);
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -77,7 +82,8 @@ class _ReservationPageState extends State<ReservationPage> {
                           Padding(
                             padding: const EdgeInsets.only(right: 35.0),
                             child: IconTextRow(
-                                icon: const Icon(Icons.watch_later_outlined, size: 18),
+                                icon: const Icon(Icons.watch_later_outlined,
+                                    size: 18),
                                 text: " $reservationHours horas"),
                           )
                         ]),
@@ -87,20 +93,53 @@ class _ReservationPageState extends State<ReservationPage> {
                     children: [
                       Container(
                         width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.only(bottom: 30),
-                        child: const Text("Total a pagar", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                        padding: const EdgeInsets.only(bottom: 30),
+                        child: const Text("Total a pagar",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 20)),
                       ),
                       Positioned(
                           right: 0,
-                          child: Text("\$${reservationHours * widget.field.pricePerHour}"))
+                          child: Column(
+                            children: [
+                              Text(
+                                  "\$${reservationHours * widget.field.pricePerHour}",
+                                  style: TextStyle(
+                                      fontSize: 23,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.bold)),
+                              Text("Por $reservationHours horas",
+                                  style: const TextStyle(color: Colors.grey))
+                            ],
+                          )),
                     ],
                   ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 20),
+                    child: CustomBorderButton(
+                        onPressed: () {},
+                        borderColor: Theme.of(context).colorScheme.primary,
+                        child: IconTextRow(
+                          textColor: Theme.of(context).colorScheme.primary,
+                          icon: Icon(Icons.calendar_today_outlined,
+                              size: 17,
+                              color: Theme.of(context).colorScheme.primary),
+                          text: "  Reprogramar reserva",
+                          center: true,
+                        )),
+                  ),
+                  const SizedBox(height: 15),
                   CustomButton(
                     "Pagar",
                     onPressed: () {},
                   ),
-                  ElevatedButton(
-                      onPressed: () {}, child: const Text("Cancelar"))
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, bottom: 50),
+                    child: CustomBorderButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Center(child: Text("Cancelar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)))),
+                  ),
                 ],
               ),
             ),

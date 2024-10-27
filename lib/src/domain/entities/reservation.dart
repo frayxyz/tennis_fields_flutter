@@ -1,3 +1,5 @@
+import '../../utils/date_helper.dart';
+
 class Reservation {
   final int? id;
   final int userId;
@@ -48,4 +50,8 @@ class Reservation {
       'comment': comment
     };
   }
+
+  int getReservationHours()=> DateHelper.getDifferenceBetweenHours(startTime, endTime);
+
+  double getTotalPrice(hourPrice)=> getReservationHours().toDouble() * hourPrice;
 }

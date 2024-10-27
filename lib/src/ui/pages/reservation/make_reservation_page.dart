@@ -6,6 +6,7 @@ import 'package:tennis_booking/src/ui/pages/widgets/buttons/back_icon_button.dar
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/custom_button.dart';
 import 'package:tennis_booking/src/utils/date_helper.dart';
 
+import '../../../blocs/authentication/authentication_bloc.dart';
 import '../../../blocs/create_reservation/create_reservation_bloc.dart';
 import '../../../blocs/instructor/instructor_bloc.dart';
 import 'detail/reservation_page.dart';
@@ -261,39 +262,43 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
           reservationTime: "${state.startTime} a ${state.endTime} hrs",
           price: state.calculateTotalPrice(state.field!.pricePerHour),
           onConfirm: () {
-            // Lógica de confirmación, validaciones etc
-            Reservation newReservation = Reservation(
-              userId: 1,
-              fieldId: state.field!.id!,
-              reservationDate:
-                  DateHelper.formatDateToString(state.reservationDate!),
-              startTime: state.startTime!,
-              endTime: state.endTime!,
-              status: 'created',
-            );
-            context
-                .read<ReservationBloc>()
-                .add(AddReservationEvent(newReservation));
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                  content: Text("Reserva creada!"),
-                  backgroundColor: Theme.of(context).primaryColor),
-            );
-            Navigator.of(context).pop(); //va atras
-            Navigator.of(context).pop();
-            //se dirige a detalle reserva
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ReservationPage(
-                field: state.field!,
-                reservation: newReservation)),//todo: Revisar
-            );
+            if(context.read<AuthenticationBloc>().state.userInfo?.id != null){
+              _saveReservation(context, state);
+            }
+
           },
           onCancel: () {
             Navigator.of(context).pop();
           },
         );
       },
+    );
+  }
+
+  void _saveReservation(BuildContext context, CreateReservationState state) {
+    Reservation newReservation = Reservation(
+      userId: context.read<AuthenticationBloc>().state.userInfo!.id!,
+      fieldId: state.field!.id!,
+      reservationDate:
+      DateHelper.formatDateToString(state.reservationDate!),
+      startTime: state.startTime!,
+      endTime: state.endTime!,
+      status: 'created',
+    );
+    context
+        .read<ReservationBloc>()
+        .add(AddReservationEvent(newReservation));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Reserva creada!"), backgroundColor: Theme.of(context).primaryColor),
+    );
+    Navigator.of(context).pop(); //va atras
+    Navigator.of(context).pop();
+    //se dirige a detalle reserva
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ReservationPage(
+          field: state.field!,
+          reservation: newReservation)),//todo: Revisar
     );
   }
 }

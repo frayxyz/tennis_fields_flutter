@@ -9,6 +9,11 @@ class ReservationInitial extends ReservationState {
   List<Object> get props => [];
 }
 
+class ReservationLoading extends ReservationState {
+  @override
+  List<Object> get props => [];
+}
+
 class ReservationLoaded extends ReservationState {
   final List<Reservation> scheduledReservations;
 
