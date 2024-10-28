@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tennis_booking/src/blocs/authentication/authentication_bloc.dart';
+import 'package:tennis_booking/src/ui/pages/mixin/list_reservation_mixin.dart';
+import 'package:tennis_booking/src/ui/pages/mixin/appbar_mixin.dart';
+import 'package:tennis_booking/src/utils/text_helper.dart';
 
 import '../../../blocs/fields/fields_bloc.dart';
 import '../../../blocs/instructor/instructor_bloc.dart';
 import '../../../blocs/reservation/reservation_bloc.dart';
+import '../mixin/bottom_nav_mixin.dart';
 import '../widgets/cards/field_card.dart';
-import '../widgets/cards/reservation_card.dart';
 import '../widgets/navbar/custom_bottom_navbar.dart';
-import '../widgets/texts/title_app_texts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,8 +19,11 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with AppBarMixin, ListReservationMixin, BottomNavMixin {
   late final FieldsBloc fieldsBloc;
+  late final String userName;
+
   @override
   void initState() {
     super.initState();
@@ -29,13 +34,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     final authBloc = context.read<AuthenticationBloc>();
     if (authBloc.state.status == AuthStatus.authenticated &&
         authBloc.state.userInfo != null) {
+      userName = TextHelper.capitalizeText(
+          context.read<AuthenticationBloc>().state.userInfo?.name ?? "");
       debugPrint("loading reservaion didChange");
-      context.read<ReservationBloc>().add(LoadReservationsEvent(authBloc.state.userInfo!.id!));
+      context
+          .read<ReservationBloc>()
+          .add(LoadReservationsEvent(authBloc.state.userInfo!.id!));
     }
-    super.didChangeDependencies();
   }
 
   @override
@@ -48,42 +57,26 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 19),
+              Padding(
+                padding: const EdgeInsets.only(left: 19),
                 child: Text(
-                  'Hola User!',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  'Hola ${TextHelper.getFirstName(userName)}!',
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
                 ),
               ),
-              const Divider(height: 10),
+              const Divider(color: Colors.grey, thickness: 0.2),
               buildFieldsSection(),
-              const Divider(height: 20),
+              const Divider(color: Colors.grey, thickness: 0.2),
               buildScheduledReservationsSection()
             ],
           ),
         ),
       ),
-      bottomNavigationBar: const CustomBottomNavBar(),
-    );
-  }
-
-  AppBar buildHomeAppBar(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      title: buildTitleAppBar(),
-      backgroundColor: Colors.transparent,
-      foregroundColor: Colors.white,
-      elevation: 0,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [const Color(0xff182d52), Theme.of(context).primaryColor],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-        ),
+      bottomNavigationBar: CustomBottomNavBar(
+        currentIndex: 0,
+        onTap: onItemTapped,
       ),
-      actions: buildAppbarActions(),
     );
   }
 
@@ -96,48 +89,6 @@ class _HomePageState extends State<HomePage> {
         listFieldsAvailability(),
       ]),
     );
-  }
-
-  Widget buildScheduledReservationsSection() {
-    return Padding(
-      padding: const EdgeInsets.only(left: 19),
-      child: Wrap(children: [
-        const Text(
-          'Reservas Programadas',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 40),
-        listScheduledReservations(),
-      ]),
-    );
-  }
-
-  Wrap buildTitleAppBar() {
-    return const Wrap(
-      children: [
-        TennisText(isTitleAppbar: true),
-        CourtText(
-          isTitleAppbar: true,
-        )
-      ],
-    );
-  }
-
-  List<Widget> buildAppbarActions() {
-    return [
-      const CircleAvatar(
-        radius: 12,
-        backgroundImage: AssetImage('assets/images/tennis_image.jpg'),
-      ),
-      IconButton(
-        icon: const Icon(Icons.notifications_none),
-        onPressed: () {},
-      ),
-      IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {},
-      ),
-    ];
   }
 
   Container listFieldsAvailability() {
@@ -162,49 +113,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget listScheduledReservations() {
-    return BlocBuilder<ReservationBloc, ReservationState>(
-      builder: (context, state) {
-        debugPrint("state resrvation is $state");
-        if (state is ReservationLoaded) {
-          if (state.scheduledReservations.isNotEmpty) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.scheduledReservations.length,
-                itemBuilder: (context, index) {
-                  final reservation = state.scheduledReservations[index];
-                  return fieldsBloc.getFieldById(reservation.fieldId) != null
-                      ? Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        child: ReservationCard(
-                        reservation: reservation,
-                        field: fieldsBloc.getFieldById(reservation.fieldId)!),
-                      )
-                      : const SizedBox();
-                },
-              ),
-            );
-          } else {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(30.0),
-                child: Text("No tienes reservas programadas."),
-              ),);
-          }
-        } else if (state is ReservationInitial || state is ReservationLoading) {
-          return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(30.0),
-                child: CircularProgressIndicator(),
-              ));
-        } else {
-          return const Center(
-              child: Text("No se pudieron cargar las reservas."));
-        }
-      },
+  Widget buildScheduledReservationsSection() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 19),
+      child: Wrap(children: [
+        const Text(
+          'Reservas Programadas',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 40),
+        listScheduledReservations(fieldsBloc, fromHome: true),
+      ]),
     );
   }
 }

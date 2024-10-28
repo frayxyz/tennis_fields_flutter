@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 class CustomBorderButton extends StatelessWidget {
   final Widget child;
   final Color? borderColor;
+  final Color? backgroundColor;
   final void Function() onPressed;
   const CustomBorderButton(
       {super.key,
       required this.child,
       this.borderColor,
-      required this.onPressed});
+      required this.onPressed,
+      this.backgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +20,7 @@ class CustomBorderButton extends StatelessWidget {
           width: MediaQuery.of(context).size.width,
           padding: const EdgeInsetsDirectional.symmetric(vertical: 8),
           decoration: BoxDecoration(
+            color: backgroundColor,
             border: borderColor != null
                 ? Border.all(color: borderColor!)
                 : Border.all(),

@@ -21,4 +21,8 @@ class TextHelper {
     }
     return "${text.substring(0, maxLength)}...";
   }
+  static String getFirstName(String fullName) {
+    if (fullName.isEmpty) return fullName;
+    return fullName.trim().split(" ")[0];
+  }
 }

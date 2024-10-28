@@ -5,8 +5,9 @@ class IconTextRow extends StatelessWidget {
   final String text;
   final bool center;
   final Color? textColor;
+  final bool boldText;
   const IconTextRow({
-    super.key, required this.icon, required this.text, this.center =false, this.textColor
+    super.key, required this.icon, required this.text, this.center =false, this.textColor, this.boldText = false
   });
 
   @override
@@ -16,7 +17,7 @@ class IconTextRow extends StatelessWidget {
         children: [
       icon,
       const SizedBox(width: 6),
-      Text(text, style: TextStyle(color: textColor))
+      Text(text, style: TextStyle(color: textColor, fontWeight: boldText? FontWeight.bold: null ))
     ]);
   }
 }

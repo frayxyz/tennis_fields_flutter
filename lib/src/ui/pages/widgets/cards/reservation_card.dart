@@ -20,19 +20,18 @@ class ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String userName = TextHelper.capitalizeText(
-        context.read<AuthenticationBloc>().state.userInfo?.name ?? "");
+    String userName = TextHelper.capitalizeText(context.read<AuthenticationBloc>().state.userInfo?.name ?? "");
 
     return Stack(
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 75),
+          padding: const EdgeInsets.only(left: 73),
           child: Wrap(
             direction: Axis.vertical,
             children: [
               Text( TextHelper.truncateText(field.name, maxLength: 18),
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20)),
+                      fontWeight: FontWeight.bold, fontSize: 18)),
               Text('Cancha tipo ${field.type}'),
               IconTextRow(
                   icon: const Icon(

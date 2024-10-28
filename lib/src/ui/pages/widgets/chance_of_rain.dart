@@ -10,7 +10,7 @@ class ChanceOfRainWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Row(
       children: [
-        Icon(CupertinoIcons.cloud_drizzle, color: Colors.blueAccent,),
+        Icon(CupertinoIcons.cloud_drizzle, color: Colors.blueAccent, size: 18),
         Text(" 30 %")
       ],
     );

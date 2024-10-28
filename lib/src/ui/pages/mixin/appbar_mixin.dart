@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../widgets/texts/title_app_texts.dart';
 
-mixin MixinAppbar{
+mixin AppBarMixin{
   AppBar buildHomeAppBar(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
