@@ -16,7 +16,7 @@ mixin ListReservationMixin {
         if (fieldsState is FieldsAvailabilityLoaded) {
           return BlocBuilder<ReservationBloc, ReservationState>(
             builder: (context, state) {
-              debugPrint("state reservation v2 is $state");
+              debugPrint("state reservation is $state");
               if (state is ReservationLoaded) {
                 return state.scheduledReservations.isNotEmpty
                     ? Padding(

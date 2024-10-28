@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
   listener: (context, state) {
     debugPrint("bloc listerner auth es: $state");
-    if(state.status == AuthStatus.authenticated){
+    if(state.status == AuthStatus.authenticated && state.userInfo?.name != null ){
 
       debugPrint("Navegar a pagina home");
       Navigator.push(

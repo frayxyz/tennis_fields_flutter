@@ -22,54 +22,58 @@ class ReservationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     String userName = TextHelper.capitalizeText(context.read<AuthenticationBloc>().state.userInfo?.name ?? "");
 
-    return Stack(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 73),
-          child: Wrap(
-            direction: Axis.vertical,
-            children: [
-              Text( TextHelper.truncateText(field.name, maxLength: 18),
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18)),
-              Text('Cancha tipo ${field.type}'),
-              IconTextRow(
-                  icon: const Icon(
-                    Icons.calendar_today_outlined,
-                    size: 15,
-                  ),
-                  text: DateHelper.formatDateLanguage(reservation.reservationDate)),
-              Row(
-                children: [
-                  const Text('Reservado por: '),
-                  const CircleAvatar(
-                    radius: 10,
-                    backgroundImage: AssetImage('assets/images/tennis_image.jpg'),
-                  ),
-                  const SizedBox(width: 5),
-                  Text(TextHelper.truncateText(userName, maxLength: 16)),
-                ],
-              ),
-              IconTextRow(
-                  icon: const Icon(Icons.watch_later_outlined),
-                  text:
-                      "${reservation.getReservationHours()} hora${reservation.getReservationHours() == 1 ? '' : 's'} | \$${reservation.getTotalPrice(field.pricePerHour.toInt())}")
-            ],
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 73),
+            child: Wrap(
+              direction: Axis.vertical,
+              children: [
+                Text( TextHelper.truncateText(field.name, maxLength: 18), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                Text('Cancha tipo ${field.type}'),
+               SizedBox(height: 7),
+                IconTextRow(
+                    icon: const Icon(
+                      Icons.calendar_today_outlined,
+                      size: 15,
+                    ),
+                    text: DateHelper.formatDateLanguage(reservation.reservationDate)),
+                SizedBox(height: 7),
+                Row(
+                  children: [
+                    const Text('Reservado por: '),
+                    const CircleAvatar(
+                      radius: 10,
+                      backgroundImage: AssetImage('assets/images/user.png'),
+                    ),
+                    const SizedBox(width: 5),
+                    Text(TextHelper.truncateText(userName, maxLength: 16)),
+                  ],
+                ),
+                SizedBox(height: 6),
+                IconTextRow(
+                    icon: const Icon(Icons.watch_later_outlined),
+                    text:
+                        "${reservation.getReservationHours()} hora${reservation.getReservationHours() == 1 ? '' : 's'} | \$${reservation.getTotalPrice(field.pricePerHour.toInt())}")
+              ],
+            ),
           ),
-        ),
-        Positioned(
-            left: 0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: const Image(
-                image: AssetImage('assets/images/tennis_image.jpg'),
-                height: 60,
-                width: 60,
-                fit: BoxFit.cover,
-              ),
-            )),
-        const Positioned(right: 0, child: ChanceOfRainWidget())
-      ],
+          Positioned(
+              left: 0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image(
+                  image: AssetImage('assets/images/${field.image}'),
+                  height: 60,
+                  width: 60,
+                  fit: BoxFit.cover,
+                ),
+              )),
+          const Positioned(right: 0, child: ChanceOfRainWidget())
+        ],
+      ),
     );
 
   }

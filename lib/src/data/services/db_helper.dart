@@ -50,7 +50,8 @@ class DatabaseHelper {
       opening_time TEXT NOT NULL,
       closing_time TEXT NOT NULL, 
       price_per_hour INTEGER NOT NULL,
-      type TEXT NOT NULL
+      type TEXT NOT NULL,
+      image TEXT NOT NULL,
     )''');
 
     await db.execute('''CREATE TABLE Reservations (
@@ -63,6 +64,7 @@ class DatabaseHelper {
       status TEXT NOT NULL,
       instructor_id INTEGER,
       comment TEXT,
+      is_favorite INTEGER,
       FOREIGN KEY(user_id) REFERENCES Users(id),
       FOREIGN KEY(field_id) REFERENCES Fields(id)
     )''');
@@ -75,6 +77,7 @@ class DatabaseHelper {
       'closing_time': '17:00',
       'type': 'A',
       'price_per_hour': 25,
+      'image': 'camp-1.jpg'
     });
     await db.insert('Fields', {
       'name': 'Sport Box',
@@ -83,6 +86,7 @@ class DatabaseHelper {
       'closing_time': '17:00',
       'type': 'C',
       'price_per_hour': 25,
+      'image': 'camp-2.jpg'
     });
     await db.insert('Fields', {
       'name': 'Multi Box',
@@ -91,6 +95,7 @@ class DatabaseHelper {
       'closing_time': '17:00',
       'type': 'A',
       'price_per_hour': 30,
+      'image': 'camp-3.jpg'
     });
 
     // add default instructors

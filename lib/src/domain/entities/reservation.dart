@@ -10,6 +10,7 @@ class Reservation {
   final String status;
   final String? instructorId;
   final String? comment;
+  late final bool isFavorite;
 
   Reservation({
     this.id,
@@ -20,7 +21,8 @@ class Reservation {
     required this.endTime,
     required this.status,
     this.instructorId,
-    this.comment
+    this.comment,
+    this.isFavorite = false,
   });
 
   factory Reservation.fromMap(Map<String, dynamic> map) {
@@ -33,7 +35,8 @@ class Reservation {
       endTime: map['end_time'],
       status: map['status'],
       instructorId: map['instructor_id'],
-      comment: map['comment']
+      comment: map['comment'],
+      isFavorite: map['is_favorite'] == 1,
     );
   }
 
@@ -47,7 +50,8 @@ class Reservation {
       'end_time': endTime,
       'status': status,
       'instructor_id': instructorId,
-      'comment': comment
+      'comment': comment,
+      'is_favorite': isFavorite ? 1 : 0
     };
   }
 

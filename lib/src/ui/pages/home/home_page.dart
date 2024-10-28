@@ -22,31 +22,30 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with AppBarMixin, ListReservationMixin, BottomNavMixin {
   late final FieldsBloc fieldsBloc;
-  late final String userName;
+  late final AuthenticationBloc authBloc;
 
   @override
   void initState() {
     super.initState();
     fieldsBloc = context.read<FieldsBloc>();
-    fieldsBloc.add(LoadFieldsWithAvailability());//LoadFieldsEvent());
+    fieldsBloc.add(LoadFieldsWithAvailability());
     context.read<InstructorBloc>().add(FetchInstructors());
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    final authBloc = context.read<AuthenticationBloc>();
+    authBloc = context.read<AuthenticationBloc>();
     if (authBloc.state.status == AuthStatus.authenticated &&
         authBloc.state.userInfo != null) {
-      userName = TextHelper.capitalizeText(context.read<AuthenticationBloc>().state.userInfo?.name ?? "");
-      debugPrint("loading reservaion didChange");
       context.read<ReservationBloc>().add(LoadReservationsEvent(authBloc.state.userInfo!.id!));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    String userName = TextHelper.capitalizeText(context.read<AuthenticationBloc>().state.userInfo?.name ?? "");
+
     return Scaffold(
       appBar: buildHomeAppBar(context),
       body: SingleChildScrollView(

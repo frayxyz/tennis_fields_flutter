@@ -38,7 +38,7 @@ mixin AppBarMixin{
     return [
       const CircleAvatar(
         radius: 12,
-        backgroundImage: AssetImage('assets/images/tennis_image.jpg'),
+        backgroundImage: AssetImage('assets/images/user.png'),
       ),
       IconButton(
         icon: const Icon(Icons.notifications_none),

@@ -10,29 +10,29 @@ import 'package:tennis_booking/src/utils/date_helper.dart';
 import '../../../blocs/authentication/authentication_bloc.dart';
 import '../../../blocs/create_reservation/create_reservation_bloc.dart';
 import '../../../blocs/instructor/instructor_bloc.dart';
-import 'detail/reservation_page.dart';
+import 'detail/confirm_reservation_page.dart';
 import 'widgets/date_selectors/date_dropdown.dart';
 import 'widgets/date_selectors/hour_dropdown.dart';
 import 'widgets/field_details.dart';
 import 'widgets/instructor_select/instructor_select.dart';
 import 'widgets/modal/confirm_reservation_modal.dart';
 
-class MakeReservationPage extends StatefulWidget {
+class ReservationPage extends StatefulWidget {
   final String defaultAvailableDate;
-  const MakeReservationPage({super.key, required this.defaultAvailableDate});
+  const ReservationPage({super.key, required this.defaultAvailableDate});
 
   @override
-  State<MakeReservationPage> createState() => _MakeReservationPageState();
+  State<ReservationPage> createState() => _ReservationPageState();
 }
 
-class _MakeReservationPageState extends State<MakeReservationPage> {
+class _ReservationPageState extends State<ReservationPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
   final List<String> _imageUrls = [
-    'assets/images/tennis_image.jpg',
-    'assets/images/tennis_image.jpg',
-    'assets/images/tennis_image.jpg',
+    'assets/images/camp-1.jpg',
+    'assets/images/camp-2.jpg',
+    'assets/images/camp-3.jpg',
   ];
   late final RainProbabilityBloc rainProbabilityBloc;
 
@@ -84,7 +84,8 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
                             CreateReservationSetDateEvent(
                                 reservationDate: date));
                       }
-                    }, defaultAvailableDate: widget.defaultAvailableDate,
+                    },
+                    defaultAvailableDate: widget.defaultAvailableDate,
                   ),
                   const SizedBox(height: 16),
 
@@ -97,19 +98,24 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
                             child: HourDropdown(
                               defaultTime: state.startTime,
                               title: 'Hora de Inicio',
-                              availableHours: DateHelper.generateHourlyIntervals(
-                                  state.field!.openingTime,
-                                  state.field!
-                                      .closingTime), //['08:00', '09:00', '10:00', '11:00', '12:00'],
+                              availableHours:
+                                  DateHelper.generateHourlyIntervals(
+                                      state.field!.openingTime,
+                                      state.field!.closingTime),
                               onHourSelected: (hour) {
-                                debugPrint('Hora de inicio seleccionada: $hour');
                                 if (hour != null) {
-                                  context.read<CreateReservationBloc>().add(CreateReservationSetStartTimeEvent(time: hour));
-
-                                  var state  = context.read<CreateReservationBloc>().state;
-                                  if(state.startTime != null && state.reservationDate != null){
-                                    debugPrint("consultar api lluvia");
-                                    rainProbabilityBloc.add(FetchRainProbability(DateHelper.formatDateToString(state.reservationDate!), state.startTime!));
+                                  context.read<CreateReservationBloc>().add(
+                                      CreateReservationSetStartTimeEvent(
+                                          time: hour));
+                                  CreateReservationState state = context
+                                      .read<CreateReservationBloc>()
+                                      .state;
+                                  if (state.dateAndStartTimeSelected()) {
+                                    rainProbabilityBloc.add(
+                                        FetchRainProbability(
+                                            DateHelper.formatDateToString(
+                                                state.reservationDate!),
+                                            state.startTime!));
                                   }
                                 }
                               },
@@ -126,7 +132,6 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
                                       state.field!.closingTime)
                                   : [],
                               onHourSelected: (hour) {
-                                print('Hora de fin seleccionada: $hour');
                                 if (hour != null) {
                                   context.read<CreateReservationBloc>().add(
                                       CreateReservationSetEndTimeEvent(
@@ -178,7 +183,26 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
                         "Reservar",
                         onPressed: state.isReadyToConfirm()
                             ? () {
-                                showConfirmReservationModal(context, state);
+                              //redirigir a confirmation
+                          Reservation newReservation = Reservation(
+                              userId: context.read<AuthenticationBloc>().state.userInfo!.id!,
+                              fieldId: state.field!.id!,
+                              reservationDate: DateHelper.formatDateToString(state.reservationDate!),
+                              startTime: state.startTime!,
+                              endTime: state.endTime!,
+                              status: 'created',
+                              isFavorite : state.isFavorite
+                          );
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ConfirmReservationPage(
+                                    field: state.field!,
+                                    reservation: newReservation)),
+                          );
+
+                                //showConfirmReservationModal(context, state);
                               }
                             : () {},
                         color: state.isReadyToConfirm()
@@ -249,74 +273,20 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
         Positioned(
           top: 16,
           right: 16,
-          child: IconButton(
-            icon: const Icon(Icons.favorite_border),
-            color: Colors.white,
-            onPressed: () {},
+          child: BlocBuilder<CreateReservationBloc, CreateReservationState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: Icon(state.isFavorite? Icons.favorite :Icons.favorite_border),
+                color: Colors.white,
+                onPressed: () {
+                  context.read<CreateReservationBloc>().add(SetFavoriteEvent(favorite: !state.isFavorite ) );
+                },
+              );
+            },
           ),
         ),
       ],
     );
   }
 
-  void showConfirmReservationModal(
-      BuildContext context, CreateReservationState state) {
-    String? instructorName;
-    if (state.instructorSelected != null) {
-      final instructorState = context.read<InstructorBloc>().state;
-      if (instructorState is InstructorsLoaded) {
-        instructorName =
-            instructorState.getInstructorById(state.instructorSelected!)?.name;
-      }
-    }
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ConfirmReservationModal(
-          instructorName: instructorName ?? "Sin instructor",
-          reservationDate:
-              DateHelper.formatDateToString(state.reservationDate!),
-          reservationTime: "${state.startTime} a ${state.endTime} hrs",
-          price: state.calculateTotalPrice(state.field!.pricePerHour),
-          onConfirm: () {
-            if(context.read<AuthenticationBloc>().state.userInfo?.id != null){
-              _saveReservation(context, state);
-            }
-
-          },
-          onCancel: () {
-            Navigator.of(context).pop();
-          },
-        );
-      },
-    );
-  }
-
-  void _saveReservation(BuildContext context, CreateReservationState state) {
-    Reservation newReservation = Reservation(
-      userId: context.read<AuthenticationBloc>().state.userInfo!.id!,
-      fieldId: state.field!.id!,
-      reservationDate:
-      DateHelper.formatDateToString(state.reservationDate!),
-      startTime: state.startTime!,
-      endTime: state.endTime!,
-      status: 'created',
-    );
-    context
-        .read<ReservationBloc>()
-        .add(AddReservationEvent(newReservation));
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Reserva creada")),
-    );
-    Navigator.of(context).pop(); //va atras
-    Navigator.of(context).pop();
-    //se dirige a detalle reserva
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ReservationPage(
-          field: state.field!,
-          reservation: newReservation)),//todo: Revisar
-    );
-  }
 }

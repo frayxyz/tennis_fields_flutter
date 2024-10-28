@@ -1,29 +1,32 @@
-import 'dart:ui';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tennis_booking/src/domain/entities/field.dart';
 import 'package:tennis_booking/src/domain/entities/reservation.dart';
+import 'package:tennis_booking/src/ui/pages/reservation_list/reservation_list_page.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/back_icon_button.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/custom_border_button.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/custom_button.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/icon_text_row.dart';
 import 'package:tennis_booking/src/utils/date_helper.dart';
 
+import '../../../../blocs/create_reservation/create_reservation_bloc.dart';
+import '../../../../blocs/reservation/reservation_bloc.dart';
+import '../../home/home_page.dart';
 import '../widgets/field_details.dart';
 
-class ReservationPage extends StatefulWidget {
+class ConfirmReservationPage extends StatefulWidget {
   final Field field;
   final Reservation reservation;
 
-  const ReservationPage(
+  const ConfirmReservationPage(
       {super.key, required this.field, required this.reservation});
 
   @override
-  State<ReservationPage> createState() => _ReservationPageState();
+  State<ConfirmReservationPage> createState() => _ConfirmReservationPageState();
 }
 
-class _ReservationPageState extends State<ReservationPage> {
+class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
@@ -66,9 +69,9 @@ class _ReservationPageState extends State<ReservationPage> {
                         IconTextRow(
                             icon: const Icon(Icons.sports_tennis),
                             text: "Cancha tipo ${widget.field.type}"),
-                        const IconTextRow(
-                            icon: Icon(Icons.calendar_today_outlined, size: 17),
-                            text: " 10 de julio 2024") //todo fecha dinamica
+                         IconTextRow(
+                            icon: const Icon(Icons.calendar_today_outlined, size: 17),
+                            text: DateHelper.formatDateLanguage(widget.reservation.reservationDate))
                       ],
                     ),
                     SizedBox(
@@ -118,7 +121,7 @@ class _ReservationPageState extends State<ReservationPage> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 20),
                     child: CustomBorderButton(
-                        onPressed: () {},
+                        onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage())),
                         borderColor: Theme.of(context).colorScheme.primary,
                         child: IconTextRow(
                           textColor: Theme.of(context).colorScheme.primary,
@@ -132,12 +135,23 @@ class _ReservationPageState extends State<ReservationPage> {
                   const SizedBox(height: 15),
                   CustomButton(
                     "Pagar",
-                    onPressed: () {},
+                    onPressed: () {
+                      context.read<ReservationBloc>().add(AddReservationEvent(widget.reservation));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Reserva creada!")),
+                      );
+                      context.read<CreateReservationBloc>().add(CreateReservationPreInitialEvent());
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const ReservationListPage()));
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 20, bottom: 50),
                     child: CustomBorderButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: (){
+                          context.read<CreateReservationBloc>().add(CreateReservationPreInitialEvent());
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
                         child: const Center(child: Text("Cancelar", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)))),
                   ),
                 ],

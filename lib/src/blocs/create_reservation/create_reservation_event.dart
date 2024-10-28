@@ -57,6 +57,14 @@ class CreateReservationSetEndTimeEvent extends CreateReservationEvent{
   @override
   List<Object?> get props =>[time];
 }
+class SetFavoriteEvent extends CreateReservationEvent{
+  final bool favorite;
+
+  const SetFavoriteEvent({required this.favorite});
+
+  @override
+  List<Object?> get props =>[favorite];
+}
 
 class ReservationCreatedEvent extends CreateReservationEvent{
   @override

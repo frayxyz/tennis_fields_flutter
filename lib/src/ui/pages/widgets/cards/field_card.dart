@@ -5,7 +5,7 @@ import 'package:tennis_booking/src/domain/entities/field_availability/field_avai
 import '../../../../blocs/create_reservation/create_reservation_bloc.dart';
 import '../../../../domain/entities/field.dart';
 import '../../../../utils/date_helper.dart';
-import '../../reservation/make_reservation_page.dart';
+import '../../reservation/reservation_page.dart';
 import '../buttons/custom_button.dart';
 import '../chance_of_rain.dart';
 
@@ -111,7 +111,7 @@ class FieldCard extends StatelessWidget {
           context.read<CreateReservationBloc>().add(CreateReservationInitialEvent(fieldReservation: fieldAvailability.field));
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MakeReservationPage(defaultAvailableDate: fieldAvailability.nextAvailableDate)),
+            MaterialPageRoute(builder: (context) => ReservationPage(defaultAvailableDate: fieldAvailability.nextAvailableDate)),
           );
         },
       ),

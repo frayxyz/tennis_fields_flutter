@@ -10,7 +10,6 @@ class CheckNextAvailableCourtDateUseCase {
   final FieldRepository _fieldRepository;
   final ReservationRepository _reservationRepository;
 
-  // Constructor
   CheckNextAvailableCourtDateUseCase(this._fieldRepository, this._reservationRepository);
 
   Future<List<FieldAvailability>> execute() async {
@@ -22,7 +21,6 @@ class CheckNextAvailableCourtDateUseCase {
       // Obtiene la próxima fecha de disponibilidad para el campo
       final nextAvailableDate = await _reservationRepository.getNextAvailableDate(field.id!);
 
-      // Si hay una fecha disponible, consulta los horarios
       if (nextAvailableDate != null) {
         final availableTimes = await _reservationRepository.getAvailableTimes(field.id!, nextAvailableDate);
 
@@ -35,10 +33,6 @@ class CheckNextAvailableCourtDateUseCase {
       }
     }
 
-    return fieldAvailabilityList; // Retorna la lista de disponibilidad
+    return fieldAvailabilityList;
   }
 }
-/*
-
-
- */

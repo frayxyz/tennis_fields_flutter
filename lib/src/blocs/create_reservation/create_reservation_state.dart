@@ -10,6 +10,7 @@ class CreateReservationState extends Equatable {
   final String? endTime;
   final String? comment;
   final bool change;
+  final bool isFavorite;
 
 
   const CreateReservationState({
@@ -20,11 +21,12 @@ class CreateReservationState extends Equatable {
     required this.reservationStatus,
     this.startTime,
     this.endTime,
-    this.change = false
+    this.change = false,
+    this.isFavorite = false
   });
 
   @override
-  List<Object?> get props => [field,reservationStatus,change];
+  List<Object?> get props => [field,reservationStatus,change, isFavorite];
 
   CreateReservationState copyWith({
     Field? field,
@@ -34,7 +36,8 @@ class CreateReservationState extends Equatable {
     String? startTime,
     String? endTime,
     String? comment,
-    bool? change
+    bool? change,
+    bool? isFavorite
   }) {
     return CreateReservationState(
       field: field ?? this.field,
@@ -44,13 +47,16 @@ class CreateReservationState extends Equatable {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       change: change ?? this.change,
-      comment: comment ?? this.comment
+      comment: comment ?? this.comment,
+      isFavorite: isFavorite ?? this.isFavorite
     );
   }
 
   bool isReadyToConfirm() {
     return (reservationDate != null && startTime != null && endTime != null);
   }
+
+  bool dateAndStartTimeSelected()=> startTime != null && reservationDate != null;
 
   double calculateTotalPrice(int pricePerHour){
     int durationInHours = 0;
@@ -64,11 +70,5 @@ class CreateReservationState extends Equatable {
 enum ReservationStatus {
   preInitial,
   initial,
-  setInstructor,
-  setDate,
-  setStartTime,
-  setEndTime,
-  setComment,
-  timeSelected,
   complete
 }

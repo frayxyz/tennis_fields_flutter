@@ -22,6 +22,9 @@ class ReservationLoaded extends ReservationState {
   @override
   List<Object?> get props => [scheduledReservations];
 
+  List<Reservation> getFavorites(){
+    return scheduledReservations.where((f)=>f.isFavorite).toList();
+  }
 }
 
 class ReservationError extends ReservationState {

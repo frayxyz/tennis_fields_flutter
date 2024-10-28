@@ -6,6 +6,7 @@ class Field {
   final String closingTime;
   final int pricePerHour;
   final String type;
+  final String image;
 
   Field({
     this.id,
@@ -15,9 +16,9 @@ class Field {
     required this.closingTime,
     required this.pricePerHour,
     required this.type,
+    required this.image
   });
 
-  // Método para convertir un Map a un Field
   factory Field.fromMap(Map<String, dynamic> map) {
     return Field(
       id: map['id'],
@@ -27,10 +28,10 @@ class Field {
       closingTime: map['closing_time'],
       pricePerHour: map['price_per_hour'],
       type: map['type'],
+      image: map['image']
     );
   }
 
-  // Método para convertir un Field a un Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,
@@ -40,6 +41,7 @@ class Field {
       'closing_time': closingTime,
       'price_per_hour': pricePerHour,
       'type': type,
+      'image': image
     };
   }
 }

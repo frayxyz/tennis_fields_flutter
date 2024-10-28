@@ -17,12 +17,11 @@ class RegisterPage extends StatelessWidget {
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         debugPrint("bloc listerner auth es: $state");
-        if(state.status == AuthStatus.authenticated || state.status == AuthStatus.registerSuccess){
+        if(state.status == AuthStatus.authenticated || state.status == AuthStatus.registerSuccess && state.userInfo?.name != null){
 
-          debugPrint("Navegar a pagina home");
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>  HomePage()),
+            MaterialPageRoute(builder: (context) =>  const HomePage()),
           );
         }
       },
