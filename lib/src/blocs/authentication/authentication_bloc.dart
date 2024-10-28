@@ -39,7 +39,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
           emit(const AuthenticationState(AuthStatus.unauthenticated, error: "error signup"));
         }
 
-      } else if (event is LogoutEvent) {}
+      } else if (event is LogoutEvent) {
+        emit(const AuthenticationState(AuthStatus.unauthenticated));
+      }
     });
   }
 }

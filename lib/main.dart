@@ -59,7 +59,6 @@ class MyApp extends StatelessWidget {
         ),
         home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
-            debugPrint("state auth es $state");
             if (state.status == AuthStatus.authenticated) {
               return const HomePage(); // Navigate to HomePage if authenticated
             } else {
