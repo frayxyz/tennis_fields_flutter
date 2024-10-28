@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tennis_booking/src/blocs/rain_probability/rain_probability_bloc.dart';
 import 'package:tennis_booking/src/data/repositories/fields_repository_impl.dart';
 import 'package:tennis_booking/src/data/repositories/instructor_repository_impl.dart';
 import 'package:tennis_booking/src/data/repositories/reservation_repository_impl.dart';
 import 'package:tennis_booking/src/data/repositories/user_repository_impl.dart';
+import 'package:tennis_booking/src/data/services/rain_probability_service.dart';
 
 import 'src/blocs/authentication/authentication_bloc.dart';
 import 'src/blocs/fields/fields_bloc.dart';
@@ -41,6 +43,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => InstructorBloc(InstructorRepositoryImpl()),
         ),
+        BlocProvider(
+          create: (context) => RainProbabilityBloc(RainProbabilityService()),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
@@ -56,7 +61,7 @@ class MyApp extends StatelessWidget {
           builder: (context, state) {
             debugPrint("state auth es $state");
             if (state.status == AuthStatus.authenticated) {
-              return HomePage(); // Navigate to HomePage if authenticated
+              return const HomePage(); // Navigate to HomePage if authenticated
             } else {
               return const WelcomePage(); // Otherwise, go to WelcomePage
             }

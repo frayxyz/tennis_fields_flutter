@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tennis_booking/src/blocs/rain_probability/rain_probability_bloc.dart';
 import 'package:tennis_booking/src/blocs/reservation/reservation_bloc.dart';
 import 'package:tennis_booking/src/domain/entities/reservation.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/back_icon_button.dart';
@@ -33,6 +34,18 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
     'assets/images/tennis_image.jpg',
     'assets/images/tennis_image.jpg',
   ];
+  late final RainProbabilityBloc rainProbabilityBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    rainProbabilityBloc = context.read<RainProbabilityBloc>();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,11 +102,15 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
                                   state.field!
                                       .closingTime), //['08:00', '09:00', '10:00', '11:00', '12:00'],
                               onHourSelected: (hour) {
-                                print('Hora de inicio seleccionada: $hour');
+                                debugPrint('Hora de inicio seleccionada: $hour');
                                 if (hour != null) {
-                                  context.read<CreateReservationBloc>().add(
-                                      CreateReservationSetStartTimeEvent(
-                                          time: hour));
+                                  context.read<CreateReservationBloc>().add(CreateReservationSetStartTimeEvent(time: hour));
+
+                                  var state  = context.read<CreateReservationBloc>().state;
+                                  if(state.startTime != null && state.reservationDate != null){
+                                    debugPrint("consultar api lluvia");
+                                    rainProbabilityBloc.add(FetchRainProbability(DateHelper.formatDateToString(state.reservationDate!), state.startTime!));
+                                  }
                                 }
                               },
                             ),
