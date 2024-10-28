@@ -31,7 +31,7 @@ class _FavoritePageState extends State<FavoritePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: buildHomeAppBar(context), // Método del mixin para crear el AppBar
+      appBar: buildHomeAppBar(context),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 25),
@@ -46,7 +46,6 @@ class _FavoritePageState extends State<FavoritePage>
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
-              // Aquí puedes agregar un método para listar los elementos favoritos
               listFavoriteReservations(fieldsBloc),
             ],
           ),
@@ -109,23 +108,23 @@ class _FavoritePageState extends State<FavoritePage>
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: state.getFavorites().length,
                           itemBuilder: (context, index) {
-                            Reservation favReservation = state.getFavorites()[index];
+                            Reservation favReservation =
+                                state.getFavorites()[index];
 
                             return buildFavoriteReservationCard(
                                 favReservation, fieldsBloc, context);
                           },
                         ),
                       )
-                    : const Center(
-                        child: Text("No hay elementos en favoritos."),
-                      );
-              } else if (state is ReservationInitial ||
-                  state is ReservationLoading) {
+                    : noElements();
+              } else if (state is ReservationLoading) {
                 return const Center(
                     child: Padding(
                   padding: EdgeInsets.all(30.0),
                   child: CircularProgressIndicator(),
                 ));
+              } else if (state is ReservationInitial) {
+                return noElements();
               } else {
                 return const Center(child: Text('Error al cargar favoritos.'));
               }
@@ -142,6 +141,12 @@ class _FavoritePageState extends State<FavoritePage>
     );
   }
 
+  Center noElements() {
+    return const Center(
+      child: Text("No hay elementos en favoritos."),
+    );
+  }
+
   Widget buildFavoriteReservationCard(
       Reservation reservation, FieldsBloc fieldsBloc, BuildContext context) {
     Field field = (fieldsBloc.state as FieldsAvailabilityLoaded)
@@ -151,10 +156,12 @@ class _FavoritePageState extends State<FavoritePage>
     return ListTile(
       leading: const Icon(Icons.star),
       title: Text(field.name),
-      subtitle: Wrap(children: [
-        Text('Fecha: ${reservation.reservationDate}'),
-        Text('Hora: ${reservation.startTime} a ${reservation.startTime}')
-      ],),
+      subtitle: Wrap(
+        children: [
+          Text('Fecha: ${reservation.reservationDate}'),
+          Text('Hora: ${reservation.startTime} a ${reservation.startTime}')
+        ],
+      ),
     );
   }
 }

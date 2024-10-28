@@ -20,6 +20,7 @@ class DateHelper {
 
   static List<String> generateHourlyIntervals(
       String openingTime, String closingTime) {
+    debugPrint("openingtime  $openingTime and closingTime $closingTime");
     // Parsear openingTime y closingTime a DateTime
     final startTime = DateTime.parse('1970-01-01 $openingTime:00');
     final endTime = DateTime.parse('1970-01-01 $closingTime:00');
@@ -33,7 +34,7 @@ class DateHelper {
           "${current.hour.toString().padLeft(2, '0')}:${current.minute.toString().padLeft(2, '0')}");
       current = current.add(const Duration(hours: 1)); // Incrementar una hora
     }
-
+    debugPrint("hourlyIntervals ${hourlyIntervals.length}");
     return hourlyIntervals;
   }
 

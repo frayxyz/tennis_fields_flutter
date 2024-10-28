@@ -5,6 +5,7 @@ import 'package:tennis_booking/src/ui/pages/mixin/list_reservation_mixin.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/custom_border_button.dart';
 
 import '../../../blocs/fields/fields_bloc.dart';
+import '../home/home_page.dart';
 import '../mixin/appbar_mixin.dart';
 import '../widgets/navbar/custom_bottom_navbar.dart';
 
@@ -79,6 +80,6 @@ class _ReservationListPageState extends State<ReservationListPage>
             ],
           ),
         ),
-        onPressed: () {});
+        onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage())));
   }
 }

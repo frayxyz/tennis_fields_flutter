@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tennis_booking/src/blocs/rain_probability/rain_probability_bloc.dart';
-import 'package:tennis_booking/src/blocs/reservation/reservation_bloc.dart';
 import 'package:tennis_booking/src/domain/entities/reservation.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/back_icon_button.dart';
 import 'package:tennis_booking/src/ui/pages/widgets/buttons/custom_button.dart';
@@ -9,13 +8,12 @@ import 'package:tennis_booking/src/utils/date_helper.dart';
 
 import '../../../blocs/authentication/authentication_bloc.dart';
 import '../../../blocs/create_reservation/create_reservation_bloc.dart';
-import '../../../blocs/instructor/instructor_bloc.dart';
+import '../../../blocs/reservation/reservation_bloc.dart';
 import 'detail/confirm_reservation_page.dart';
 import 'widgets/date_selectors/date_dropdown.dart';
 import 'widgets/date_selectors/hour_dropdown.dart';
 import 'widgets/field_details.dart';
 import 'widgets/instructor_select/instructor_select.dart';
-import 'widgets/modal/confirm_reservation_modal.dart';
 
 class ReservationPage extends StatefulWidget {
   final String defaultAvailableDate;
@@ -95,50 +93,11 @@ class _ReservationPageState extends State<ReservationPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           Expanded(
-                            child: HourDropdown(
-                              defaultTime: state.startTime,
-                              title: 'Hora de Inicio',
-                              availableHours:
-                                  DateHelper.generateHourlyIntervals(
-                                      state.field!.openingTime,
-                                      state.field!.closingTime),
-                              onHourSelected: (hour) {
-                                if (hour != null) {
-                                  context.read<CreateReservationBloc>().add(
-                                      CreateReservationSetStartTimeEvent(
-                                          time: hour));
-                                  CreateReservationState state = context
-                                      .read<CreateReservationBloc>()
-                                      .state;
-                                  if (state.dateAndStartTimeSelected()) {
-                                    rainProbabilityBloc.add(
-                                        FetchRainProbability(
-                                            DateHelper.formatDateToString(
-                                                state.reservationDate!),
-                                            state.startTime!));
-                                  }
-                                }
-                              },
-                            ),
+                            child: buildInitialHour(state, context),
                           ),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: HourDropdown(
-                              defaultTime: state.endTime,
-                              title: 'Hora de Fin',
-                              availableHours: state.startTime != null
-                                  ? DateHelper.generateHourlyIntervals(
-                                      state.field!.openingTime,
-                                      state.field!.closingTime)
-                                  : [],
-                              onHourSelected: (hour) {
-                                if (hour != null) {
-                                  context.read<CreateReservationBloc>().add(
-                                      CreateReservationSetEndTimeEvent(
-                                          time: hour));
-                                }
-                              },
-                            ),
+                            child: buildFinalHour(state, context),
                           ),
                         ],
                       );
@@ -182,27 +141,40 @@ class _ReservationPageState extends State<ReservationPage> {
                       return CustomButton(
                         "Reservar",
                         onPressed: state.isReadyToConfirm()
-                            ? () {
-                              //redirigir a confirmation
-                          Reservation newReservation = Reservation(
-                              userId: context.read<AuthenticationBloc>().state.userInfo!.id!,
-                              fieldId: state.field!.id!,
-                              reservationDate: DateHelper.formatDateToString(state.reservationDate!),
-                              startTime: state.startTime!,
-                              endTime: state.endTime!,
-                              status: 'created',
-                              isFavorite : state.isFavorite
-                          );
+                            ? () async {
 
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ConfirmReservationPage(
-                                    field: state.field!,
-                                    reservation: newReservation)),
-                          );
+                                Reservation newReservation = Reservation(
+                                    userId: context
+                                        .read<AuthenticationBloc>()
+                                        .state
+                                        .userInfo!
+                                        .id!,
+                                    fieldId: state.field!.id!,
+                                    reservationDate:
+                                        DateHelper.formatDateToString(
+                                            state.reservationDate!),
+                                    startTime: state.startTime!,
+                                    endTime: state.endTime!,
+                                    status: 'created',
+                                    isFavorite: state.isFavorite);
 
-                                //showConfirmReservationModal(context, state);
+                               int number = await context.read<ReservationBloc>().getFieldAvailabilityByDate(newReservation.fieldId, DateHelper.parseStringToDate(newReservation.reservationDate)!);
+                                if(number >= 3){
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("Cambia la fecha de tu reserva, Campo alcanzó máximo de reservas por dia!")),
+                                  );
+                                }else{
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            ConfirmReservationPage(
+                                                field: state.field!,
+                                                reservation: newReservation)),
+                                  );
+                                }
+
+
                               }
                             : () {},
                         color: state.isReadyToConfirm()
@@ -217,6 +189,48 @@ class _ReservationPageState extends State<ReservationPage> {
           ],
         ),
       ),
+    );
+  }
+
+  HourDropdown buildFinalHour(
+      CreateReservationState state, BuildContext context) {
+    return HourDropdown(
+      defaultTime: state.endTime,
+      title: 'Hora de Fin',
+      availableHours: state.startTime != null
+          ? DateHelper.generateHourlyIntervals(
+              state.field!.openingTime, state.field!.closingTime)
+          : [],
+      onHourSelected: (hour) {
+        if (hour != null) {
+          context
+              .read<CreateReservationBloc>()
+              .add(CreateReservationSetEndTimeEvent(time: hour));
+        }
+      },
+    );
+  }
+
+  HourDropdown buildInitialHour(CreateReservationState state, BuildContext context) {
+    return HourDropdown(
+      defaultTime: state.startTime,
+      title: 'Hora de Inicio',
+      availableHours: DateHelper.generateHourlyIntervals(
+          state.field!.openingTime, state.field!.closingTime
+      ),
+      onHourSelected: (hour) {
+        if (hour != null) {
+          context
+              .read<CreateReservationBloc>()
+              .add(CreateReservationSetStartTimeEvent(time: hour));
+          CreateReservationState state =
+              context.read<CreateReservationBloc>().state;
+          if (state.dateIsSelected()) {
+            rainProbabilityBloc.add(FetchRainProbability(
+                DateHelper.formatDateToString(state.reservationDate!), hour));
+          }
+        }
+      },
     );
   }
 
@@ -276,10 +290,13 @@ class _ReservationPageState extends State<ReservationPage> {
           child: BlocBuilder<CreateReservationBloc, CreateReservationState>(
             builder: (context, state) {
               return IconButton(
-                icon: Icon(state.isFavorite? Icons.favorite :Icons.favorite_border),
+                icon: Icon(
+                    state.isFavorite ? Icons.favorite : Icons.favorite_border),
                 color: Colors.white,
                 onPressed: () {
-                  context.read<CreateReservationBloc>().add(SetFavoriteEvent(favorite: !state.isFavorite ) );
+                  context
+                      .read<CreateReservationBloc>()
+                      .add(SetFavoriteEvent(favorite: !state.isFavorite));
                 },
               );
             },
@@ -288,5 +305,4 @@ class _ReservationPageState extends State<ReservationPage> {
       ],
     );
   }
-
 }

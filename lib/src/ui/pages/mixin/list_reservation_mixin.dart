@@ -38,19 +38,15 @@ mixin ListReservationMixin {
                           },
                         ),
                       )
-                    : const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(30.0),
-                          child: Text("No tienes reservas programadas."),
-                        ),
-                      );
-              } else if (state is ReservationInitial ||
-                  state is ReservationLoading) {
+                    : noReservations();
+              } else if (state is ReservationLoading) {
                 return const Center(
                     child: Padding(
                   padding: EdgeInsets.all(30.0),
                   child: CircularProgressIndicator(),
                 ));
+              } else if (state is ReservationInitial) {
+                return noReservations();
               } else {
                 return const Center(
                     child: Text("No se pudieron cargar las reservas."));
@@ -68,8 +64,17 @@ mixin ListReservationMixin {
     );
   }
 
-  Padding buildDismissibleReservationCard(Reservation reservation, FieldsBloc fieldsBloc, BuildContext context) {
+  Center noReservations() {
+    return const Center(
+      child: Padding(
+        padding: EdgeInsets.all(30.0),
+        child: Text("No tienes reservas programadas."),
+      ),
+    );
+  }
 
+  Padding buildDismissibleReservationCard(
+      Reservation reservation, FieldsBloc fieldsBloc, BuildContext context) {
     int userId = context.read<AuthenticationBloc>().state.userInfo!.id!;
 
     return Padding(

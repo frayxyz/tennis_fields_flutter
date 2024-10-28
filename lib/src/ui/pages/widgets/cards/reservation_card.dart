@@ -33,14 +33,14 @@ class ReservationCard extends StatelessWidget {
               children: [
                 Text( TextHelper.truncateText(field.name, maxLength: 18), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 Text('Cancha tipo ${field.type}'),
-               SizedBox(height: 7),
+               const SizedBox(height: 7),
                 IconTextRow(
                     icon: const Icon(
                       Icons.calendar_today_outlined,
                       size: 15,
                     ),
                     text: DateHelper.formatDateLanguage(reservation.reservationDate)),
-                SizedBox(height: 7),
+                const SizedBox(height: 7),
                 Row(
                   children: [
                     const Text('Reservado por: '),
@@ -52,7 +52,7 @@ class ReservationCard extends StatelessWidget {
                     Text(TextHelper.truncateText(userName, maxLength: 16)),
                   ],
                 ),
-                SizedBox(height: 6),
+                const SizedBox(height: 6),
                 IconTextRow(
                     icon: const Icon(Icons.watch_later_outlined),
                     text:

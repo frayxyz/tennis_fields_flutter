@@ -51,7 +51,7 @@ class DatabaseHelper {
       closing_time TEXT NOT NULL, 
       price_per_hour INTEGER NOT NULL,
       type TEXT NOT NULL,
-      image TEXT NOT NULL,
+      image TEXT NOT NULL
     )''');
 
     await db.execute('''CREATE TABLE Reservations (

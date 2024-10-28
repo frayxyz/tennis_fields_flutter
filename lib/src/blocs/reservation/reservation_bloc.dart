@@ -3,9 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:tennis_booking/src/domain/entities/reservation.dart';
-import 'package:tennis_booking/src/utils/date_helper.dart';
 
-import '../../domain/entities/field.dart';
 import '../../domain/gateways/reservation_repository.dart';
 
 part 'reservation_event.dart';
@@ -78,17 +76,8 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
    });
   }
 
-
-
-
-  Future<List<TimeOfDay>?>  getFieldAvailabilityByDate(Field field,DateTime date) async {
-
-    List<Reservation> reservations =   await repository.getReservationsByFieldAndDate(field.id!, DateHelper.formatDateToString(date));
-    List<TimeOfDay> times; //todo: crear list horas según horario de campo
-    return null;
+  Future<int>  getFieldAvailabilityByDate(int fieldId,DateTime date) async {
+    return await repository.getReservationCountByFieldAndDate(fieldId ,date);
   }
 
-  Future<List<TimeOfDay>?>  getInstructorAvailabilityByDate(int idInstructor,DateTime date) async {
-    return null;
-  }
 }

@@ -12,7 +12,6 @@ import 'package:tennis_booking/src/utils/date_helper.dart';
 
 import '../../../../blocs/create_reservation/create_reservation_bloc.dart';
 import '../../../../blocs/reservation/reservation_bloc.dart';
-import '../../home/home_page.dart';
 import '../widgets/field_details.dart';
 
 class ConfirmReservationPage extends StatefulWidget {
@@ -121,7 +120,7 @@ class _ConfirmReservationPageState extends State<ConfirmReservationPage> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.1, vertical: 20),
                     child: CustomBorderButton(
-                        onPressed: ()=>Navigator.push(context, MaterialPageRoute(builder: (context) => const HomePage())),
+                        onPressed: ()=>Navigator.pop(context),
                         borderColor: Theme.of(context).colorScheme.primary,
                         child: IconTextRow(
                           textColor: Theme.of(context).colorScheme.primary,

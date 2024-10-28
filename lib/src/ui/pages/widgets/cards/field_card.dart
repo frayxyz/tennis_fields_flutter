@@ -42,8 +42,8 @@ class FieldCard extends StatelessWidget {
       height: 130,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        image: const DecorationImage(
-          image: AssetImage('assets/images/tennis_image.jpg'), // Imagen de ejemplo
+        image: DecorationImage(
+          image: AssetImage('assets/images/${fieldAvailability.field.image}'), // Imagen de ejemplo
           fit: BoxFit.cover,
         ),
       ),
@@ -107,7 +107,6 @@ class FieldCard extends StatelessWidget {
         'Reservar',
         isCardButton: true,
         onPressed: () {
-          //Agregar evento para empezar CrearReservation
           context.read<CreateReservationBloc>().add(CreateReservationInitialEvent(fieldReservation: fieldAvailability.field));
           Navigator.push(
             context,

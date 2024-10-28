@@ -20,7 +20,10 @@ class ChanceOfRainWidget extends StatelessWidget {
               return Text(" ${state.probability} %");
 
             }else if(state is RainProbabilityLoading){
-              return Icon(Icons.front_loader);
+              return const Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: Icon(Icons.camera, size:16),
+              );
             }else{
               return const SizedBox();
             }

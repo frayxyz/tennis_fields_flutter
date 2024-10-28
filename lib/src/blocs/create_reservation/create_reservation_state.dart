@@ -12,7 +12,6 @@ class CreateReservationState extends Equatable {
   final bool change;
   final bool isFavorite;
 
-
   const CreateReservationState({
     this.field,
     this.reservationDate,
@@ -22,7 +21,7 @@ class CreateReservationState extends Equatable {
     this.startTime,
     this.endTime,
     this.change = false,
-    this.isFavorite = false
+    this.isFavorite = false,
   });
 
   @override
@@ -37,7 +36,7 @@ class CreateReservationState extends Equatable {
     String? endTime,
     String? comment,
     bool? change,
-    bool? isFavorite
+    bool? isFavorite,
   }) {
     return CreateReservationState(
       field: field ?? this.field,
@@ -48,7 +47,7 @@ class CreateReservationState extends Equatable {
       endTime: endTime ?? this.endTime,
       change: change ?? this.change,
       comment: comment ?? this.comment,
-      isFavorite: isFavorite ?? this.isFavorite
+      isFavorite: isFavorite ?? this.isFavorite,
     );
   }
 
@@ -56,7 +55,7 @@ class CreateReservationState extends Equatable {
     return (reservationDate != null && startTime != null && endTime != null);
   }
 
-  bool dateAndStartTimeSelected()=> startTime != null && reservationDate != null;
+  bool dateIsSelected()=> reservationDate != null;
 
   double calculateTotalPrice(int pricePerHour){
     int durationInHours = 0;

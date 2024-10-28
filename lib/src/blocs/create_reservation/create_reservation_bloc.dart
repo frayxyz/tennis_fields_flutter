@@ -1,17 +1,21 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
+import 'package:tennis_booking/src/data/repositories/reservation_repository_impl.dart';
 
 import '../../domain/entities/field.dart';
+import '../../domain/gateways/reservation_repository.dart';
 import '../../utils/date_helper.dart';
 
 part 'create_reservation_event.dart';
 part 'create_reservation_state.dart';
 
 class CreateReservationBloc extends Bloc<CreateReservationEvent, CreateReservationState> {
-  CreateReservationBloc()
-      : super(const CreateReservationState(
+  final ReservationRepository repository = ReservationRepositoryImpl();
+
+  CreateReservationBloc() : super(const CreateReservationState(
             reservationStatus: ReservationStatus.preInitial)) {
-    on<CreateReservationEvent>((event, emit) {
+    on<CreateReservationEvent>((event, emit) async {
       if (event is CreateReservationPreInitialEvent) {
         emit(const CreateReservationState(
             reservationStatus: ReservationStatus.preInitial));
@@ -24,6 +28,7 @@ class CreateReservationBloc extends Bloc<CreateReservationEvent, CreateReservati
         }
         emit(state);
       } else if (event is CreateReservationSetDateEvent) {
+
         emit(state.copyWith(
           change: !state.change,
           reservationDate: event.reservationDate,
@@ -54,4 +59,5 @@ class CreateReservationBloc extends Bloc<CreateReservationEvent, CreateReservati
       }
     });
   }
+
 }
