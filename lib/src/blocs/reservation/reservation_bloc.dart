@@ -29,6 +29,16 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
         } catch (error) {
           emit(ReservationError("Failed to save or load reservations: $error"));
         }
+      }else if(event is DeleteReservationEvent){
+        try {
+          debugPrint("deleting reservation");
+          emit(ReservationLoading());
+          await repository.deleteReservation(event.idReservation);
+
+          await loadReservations(event.userId, emit);
+        } catch (error) {
+          emit(ReservationError("Failed to delete or load reservations: $error"));
+        }
       }
     });
   }
@@ -76,8 +86,6 @@ class ReservationBloc extends Bloc<ReservationEvent, ReservationState> {
     List<Reservation> reservations =   await repository.getReservationsByFieldAndDate(field.id!, DateHelper.formatDateToString(date));
     List<TimeOfDay> times; //todo: crear list horas según horario de campo
     return null;
-
-
   }
 
   Future<List<TimeOfDay>?>  getInstructorAvailabilityByDate(int idInstructor,DateTime date) async {

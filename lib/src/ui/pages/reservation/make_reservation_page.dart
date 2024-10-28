@@ -17,7 +17,8 @@ import 'widgets/instructor_select/instructor_select.dart';
 import 'widgets/modal/confirm_reservation_modal.dart';
 
 class MakeReservationPage extends StatefulWidget {
-  const MakeReservationPage({super.key});
+  final String defaultAvailableDate;
+  const MakeReservationPage({super.key, required this.defaultAvailableDate});
 
   @override
   State<MakeReservationPage> createState() => _MakeReservationPageState();
@@ -70,7 +71,7 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
                             CreateReservationSetDateEvent(
                                 reservationDate: date));
                       }
-                    },
+                    }, defaultAvailableDate: widget.defaultAvailableDate,
                   ),
                   const SizedBox(height: 16),
 
@@ -289,7 +290,7 @@ class _MakeReservationPageState extends State<MakeReservationPage> {
         .read<ReservationBloc>()
         .add(AddReservationEvent(newReservation));
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Reserva creada!"), backgroundColor: Theme.of(context).primaryColor),
+      const SnackBar(content: Text("Reserva creada")),
     );
     Navigator.of(context).pop(); //va atras
     Navigator.of(context).pop();

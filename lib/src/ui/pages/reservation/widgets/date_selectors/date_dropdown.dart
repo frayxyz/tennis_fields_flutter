@@ -7,18 +7,20 @@ import '../../../../../utils/date_helper.dart';
 class DateDropdown extends StatefulWidget {
   final String title;
   final ValueChanged<DateTime?> onDateSelected;
+  final String defaultAvailableDate;
 
   const DateDropdown({
     super.key,
     required this.title,
     required this.onDateSelected,
+    required this.defaultAvailableDate,
   });
 
   @override
-  _DateDropdownState createState() => _DateDropdownState();
+  DateDropdownState createState() => DateDropdownState();
 }
 
-class _DateDropdownState extends State<DateDropdown> {
+class DateDropdownState extends State<DateDropdown> {
   DateTime? _selectedDate;
   bool _isDropdownOpen = false;
 
@@ -58,7 +60,7 @@ class _DateDropdownState extends State<DateDropdown> {
                     Text(
                       _selectedDate != null
                           ? DateHelper.formatDateToString(_selectedDate!)
-                          : DateHelper.formatDateToString(DateTime.now()),//todo: fecha mostrada en tarjeta home
+                          : widget.defaultAvailableDate,
                       style: TextStyle(
                           color: _selectedDate != null? Theme.of(context).colorScheme.primary : Colors.grey
                       ),
@@ -89,7 +91,7 @@ class _DateDropdownState extends State<DateDropdown> {
               ],
             ),
             child: CalendarDatePicker(
-              initialDate: _selectedDate ?? DateTime.now(),
+              initialDate: _selectedDate ?? DateHelper.parseStringToDate(widget.defaultAvailableDate),
               firstDate: DateTime(2024),
               lastDate: DateTime(2030),
               onDateChanged: (date) {

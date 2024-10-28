@@ -28,22 +28,20 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     fieldsBloc = context.read<FieldsBloc>();
-    fieldsBloc.add(LoadFieldsEvent());
+    fieldsBloc.add(LoadFieldsWithAvailability());//LoadFieldsEvent());
     context.read<InstructorBloc>().add(FetchInstructors());
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     final authBloc = context.read<AuthenticationBloc>();
     if (authBloc.state.status == AuthStatus.authenticated &&
         authBloc.state.userInfo != null) {
-      userName = TextHelper.capitalizeText(
-          context.read<AuthenticationBloc>().state.userInfo?.name ?? "");
+      userName = TextHelper.capitalizeText(context.read<AuthenticationBloc>().state.userInfo?.name ?? "");
       debugPrint("loading reservaion didChange");
-      context
-          .read<ReservationBloc>()
-          .add(LoadReservationsEvent(authBloc.state.userInfo!.id!));
+      context.read<ReservationBloc>().add(LoadReservationsEvent(authBloc.state.userInfo!.id!));
     }
   }
 
@@ -97,16 +95,18 @@ class _HomePageState extends State<HomePage>
       height: 320,
       child:
           BlocBuilder<FieldsBloc, FieldsState>(builder: (context, fieldState) {
-        if (fieldState is FieldsLoaded && fieldState.fields.isNotEmpty) {
+        if (fieldState is FieldsAvailabilityLoaded && fieldState.fields.isNotEmpty) {
           return ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: fieldState.fields.length,
             itemBuilder: (context, index) {
-              final field = fieldState.fields[index];
-              return FieldCard(field: field);
+              final fieldAvailability = fieldState.fields[index];
+              return FieldCard(fieldAvailability: fieldAvailability);
             },
           );
-        } else {
+        }else if(fieldState is  FieldsLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }else {
           return const Center(child: Text("No fields available"));
         }
       }),

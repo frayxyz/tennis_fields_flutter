@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tennis_booking/src/domain/entities/field_availability/field_availability.dart';
 
 import '../../../../blocs/create_reservation/create_reservation_bloc.dart';
 import '../../../../domain/entities/field.dart';
+import '../../../../utils/date_helper.dart';
 import '../../reservation/make_reservation_page.dart';
 import '../buttons/custom_button.dart';
 import '../chance_of_rain.dart';
 
 class FieldCard extends StatelessWidget {
-  final Field field;
+  final FieldAvailability fieldAvailability;
 
   const FieldCard({
     super.key,
-    required this.field,
+    required this.fieldAvailability,
   });
 
   @override
@@ -61,7 +63,7 @@ class FieldCard extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: Text(
-                  field.name,
+                  fieldAvailability.field.name,
                   style: const TextStyle(
                       fontSize: 20, fontWeight: FontWeight.bold),
                 ),
@@ -73,18 +75,26 @@ class FieldCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 3),
-          Text('Cancha tipo ${field.type}'),
+          Text('Cancha tipo ${fieldAvailability.field.type}'),
           const SizedBox(height: 8),
-          const Wrap(children: [
-            Icon(
+          Wrap(children: [
+            const Icon(
               Icons.calendar_today_outlined,
               size: 15,
             ),
-            SizedBox(width: 7),
-            Text("9 de Julio 2024")
+            const SizedBox(width: 7),
+            Text(DateHelper.formatDateLanguage(fieldAvailability.nextAvailableDate))
           ]),
           const SizedBox(height: 7),
-          const Text("Disponible")
+          Row(
+            children: [
+              const Text("Disponible"),
+              const SizedBox(width: 6),
+              Icon(Icons.circle, size: 10, color: Theme.of(context).colorScheme.primary),
+              const SizedBox(width: 6),
+              Text("${fieldAvailability.availableTimes[0]} a ${fieldAvailability.availableTimes[fieldAvailability.availableTimes.length -1]}")
+            ],
+          )
         ],
       ),
     );
@@ -98,11 +108,10 @@ class FieldCard extends StatelessWidget {
         isCardButton: true,
         onPressed: () {
           //Agregar evento para empezar CrearReservation
-          context.read<CreateReservationBloc>().add(CreateReservationInitialEvent(fieldReservation: field));
+          context.read<CreateReservationBloc>().add(CreateReservationInitialEvent(fieldReservation: fieldAvailability.field));
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) =>
-                const MakeReservationPage()),
+            MaterialPageRoute(builder: (context) => MakeReservationPage(defaultAvailableDate: fieldAvailability.nextAvailableDate)),
           );
         },
       ),

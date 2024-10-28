@@ -38,8 +38,7 @@ class ReservationCard extends StatelessWidget {
                     Icons.calendar_today_outlined,
                     size: 15,
                   ),
-                  text: DateHelper.formatDateLanguage(
-                      reservation.reservationDate)),
+                  text: DateHelper.formatDateLanguage(reservation.reservationDate)),
               Row(
                 children: [
                   const Text('Reservado por: '),
@@ -72,6 +71,6 @@ class ReservationCard extends StatelessWidget {
         const Positioned(right: 0, child: ChanceOfRainWidget())
       ],
     );
-    //trailing: Text('11:00 AM');
+
   }
 }

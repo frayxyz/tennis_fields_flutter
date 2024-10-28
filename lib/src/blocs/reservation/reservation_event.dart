@@ -19,3 +19,12 @@ class AddReservationEvent extends ReservationEvent{
   @override
   List<Object?> get props =>[reservation];
 }
+
+class DeleteReservationEvent extends ReservationEvent{
+  final int idReservation;
+  final int userId;
+
+  const DeleteReservationEvent(this.idReservation, this.userId);
+  @override
+  List<Object?> get props =>[idReservation];
+}
