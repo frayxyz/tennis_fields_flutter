@@ -1,17 +1,13 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:tennis_booking/src/data/repositories/reservation_repository_impl.dart';
 
 import '../../domain/entities/field.dart';
-import '../../domain/gateways/reservation_repository.dart';
 import '../../utils/date_helper.dart';
 
 part 'create_reservation_event.dart';
 part 'create_reservation_state.dart';
 
 class CreateReservationBloc extends Bloc<CreateReservationEvent, CreateReservationState> {
-  final ReservationRepository repository = ReservationRepositoryImpl();
 
   CreateReservationBloc() : super(const CreateReservationState(
             reservationStatus: ReservationStatus.preInitial)) {

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/services/interfaces/rain_probability_service.dart';
@@ -37,7 +36,6 @@ class RainProbabilityBloc extends Bloc<RainProbabilityEvent, RainProbabilityStat
       if (event is FetchRainProbability) {
         emit(RainProbabilityLoading());
         try {
-          debugPrint("consultando api lluvia ${event.date}");
           final probability = await rainProbabilityService.getRainProbability(event.date, event.time);
           if (probability != null) {
             emit(RainProbabilityLoaded(probability));

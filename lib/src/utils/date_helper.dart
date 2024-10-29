@@ -13,7 +13,7 @@ class DateHelper {
       final DateFormat formatter = DateFormat('dd/MM/yyyy');
       return formatter.parse(dateString);
     } catch (e) {
-      print("Error parsing date string: $e");
+      debugPrint("Error parsing date string: $e");
       return null;
     }
   }
@@ -32,9 +32,8 @@ class DateHelper {
     while (current.isBefore(endTime) || current.isAtSameMomentAs(endTime)) {
       hourlyIntervals.add(
           "${current.hour.toString().padLeft(2, '0')}:${current.minute.toString().padLeft(2, '0')}");
-      current = current.add(const Duration(hours: 1)); // Incrementar una hora
+      current = current.add(const Duration(hours: 1));
     }
-    debugPrint("hourlyIntervals ${hourlyIntervals.length}");
     return hourlyIntervals;
   }
 
@@ -53,7 +52,7 @@ class DateHelper {
           DateFormat.yMMMMd('${locale.languageCode}-${locale.countryCode}');
       return formatter.format(parseStringToDate(date)!);
     } catch (e) {
-      print("Error al formatear la fecha: $e");
+      debugPrint("Error al formatear la fecha: $e");
       return date; // Return original if formatting fails
     }
   }

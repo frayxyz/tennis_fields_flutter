@@ -16,15 +16,13 @@ class CheckNextAvailableCourtDateUseCase {
     List<Field> fields = await _fieldRepository.getFields();
     List<FieldAvailability> fieldAvailabilityList = [];
 
-    // Itera sobre los campos para verificar disponibilidad
+
     for (final field in fields) {
-      // Obtiene la próxima fecha de disponibilidad para el campo
       final nextAvailableDate = await _reservationRepository.getNextAvailableDate(field.id!);
 
       if (nextAvailableDate != null) {
         final availableTimes = await _reservationRepository.getAvailableTimes(field.id!, nextAvailableDate);
 
-        // Agrega la disponibilidad a la lista
         fieldAvailabilityList.add(FieldAvailability(
           field: field,
           nextAvailableDate: nextAvailableDate,
